@@ -1,6 +1,6 @@
-import "./App.css";
+import "../App.css";
 
-function App() {
+function HomePage() {
   return (
     <>
       <h1>Hello from MERN Stack 🚀</h1>
@@ -8,4 +8,4 @@ function App() {
   );
 }
 
-export default App;
+export default HomePage;
