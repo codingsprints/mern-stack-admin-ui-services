@@ -4,31 +4,38 @@ import CategoriesPage from "./pages/CategoriesPage";
 import LoginPage from "./pages/login/login";
 import NonAuth from "./layouts/NonAuth";
 import Dashboard from "./layouts/Dashboard";
+import Root from "./layouts/Root";
 
 export const router = createBrowserRouter([
   {
-    // protected router - login then access
     path: "/",
-    element: <Dashboard />,
+    element: <Root />,
     children: [
       {
+        // protected router - login then access
         path: "",
-        element: <HomePage />,
+        element: <Dashboard />,
+        children: [
+          {
+            path: "",
+            element: <HomePage />,
+          },
+          {
+            path: "categories",
+            element: <CategoriesPage />,
+          },
+        ],
       },
       {
-        path: "categories",
-        element: <CategoriesPage />,
-      },
-    ],
-  },
-  {
-    // not protected router - without login
-    path: "/auth",
-    element: <NonAuth />,
-    children: [
-      {
-        path: "login",
-        element: <LoginPage />,
+        // not protected router - without login
+        path: "/auth",
+        element: <NonAuth />,
+        children: [
+          {
+            path: "login",
+            element: <LoginPage />,
+          },
+        ],
       },
     ],
   },

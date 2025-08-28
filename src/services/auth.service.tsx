@@ -41,6 +41,12 @@ export const selfUser = () => {
       return data;
     },
     enabled: false,
+    // retry: (failureCount: number, error) => {
+    //   if (error instanceof AxiosError && error.response?.status === 401) {
+    //     return false;
+    //   }
+    //   return failureCount < 3;
+    // },
   });
 };
 
