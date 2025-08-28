@@ -4,6 +4,7 @@ import { axiosInstance } from "../utils/axios";
 import { authEndpoint } from "../constant/api-endpoint/auth.api-endpoint";
 import type { Credentials } from "../utils/types";
 import type { AxiosError } from "axios";
+import { toast } from "react-toastify";
 
 export const loginUser = (
   callbackSuccess: () => void,
@@ -40,5 +41,29 @@ export const selfUser = () => {
       return data;
     },
     enabled: false,
+  });
+};
+
+export const logoutUser = () => {
+  return useMutation({
+    mutationKey: [authQueryKeys.logoutUser],
+    mutationFn: async () => {
+      const { data } = await axiosInstance.post(authEndpoint.logout);
+      return data;
+    },
+    onSuccess: async () => {
+      toast.success("user logout successfully!!");
+    },
+    onError(error) {
+      const err = error as AxiosError<any>; // cast error to AxiosError
+
+      if (err.response) {
+        console.log("Data:", err);
+        console.log("Data:", err?.response?.data?.error[0]?.message);
+        toast.error(err?.response?.data?.error[0]?.message);
+      } else {
+        toast.error(err.message);
+      }
+    },
   });
 };

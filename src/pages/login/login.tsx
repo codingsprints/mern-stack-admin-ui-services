@@ -11,18 +11,39 @@ import {
 } from "antd";
 import { LockFilled, LockOutlined, UserOutlined } from "@ant-design/icons";
 import Logo from "../../components/icons/Logo";
-import { loginUser, selfUser } from "../../services/auth.service";
+import { loginUser, logoutUser, selfUser } from "../../services/auth.service";
 import { zodValidator } from "../../utils/common";
 import { loginSchema } from "../../validation/login.validation";
 import type { Credentials } from "../../utils/types";
 import { toast } from "react-toastify";
+import { useAuthStore } from "../../store";
+import { usePermission } from "../../hooks/usePermission";
 
 const LoginPage = () => {
-  const callbackLoginSuccess = () => {
+  const { setUser, logout: logoutFromStore } = useAuthStore();
+  const { isAllowed } = usePermission();
+
+  const { mutate: logoutUserMuate } = logoutUser();
+
+  const callbackLoginSuccess = async () => {
     //self api calling
     // store in user state
-    selfRefetch();
-    console.log(selfData);
+    const selfDataPromise = await selfRefetch();
+
+    //logout or redirect to clint UI
+    // window.location.href = "http://clientui/url";
+
+    // admin, manager and customer
+    // customer can not access
+    console.log(selfDataPromise?.data?.data?.selfDto?.role);
+    if (!isAllowed(selfDataPromise?.data?.data?.selfDto)) {
+      logoutUserMuate();
+      logoutFromStore();
+      return;
+    }
+
+    setUser(selfDataPromise.data);
+
     toast.success("Logged in successfully!");
   };
 
@@ -34,7 +55,7 @@ const LoginPage = () => {
     callbackLoginError
   );
 
-  const { data: selfData, refetch: selfRefetch } = selfUser();
+  const { refetch: selfRefetch } = selfUser();
 
   const handlerSubmit = (values: Credentials) => {
     try {
