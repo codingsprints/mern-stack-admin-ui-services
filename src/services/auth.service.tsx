@@ -1,10 +1,9 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { authQueryKeys } from "../constant/query-keys/auth.query-keys";
 import { axiosInstance } from "../utils/axios";
 import { authEndpoint } from "../constant/api-endpoint/auth.api-endpoint";
 import type { Credentials } from "../utils/types";
 import type { AxiosError } from "axios";
-import { toast } from "react-toastify";
 
 export const loginUser = (
   callbackSuccess: () => void,
@@ -30,5 +29,16 @@ export const loginUser = (
         callbackError(err.message);
       }
     },
+  });
+};
+
+export const selfUser = () => {
+  return useQuery({
+    queryKey: [authQueryKeys.selfUser],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get(authEndpoint.self);
+      return data;
+    },
+    enabled: false,
   });
 };

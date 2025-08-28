@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { LockFilled, LockOutlined, UserOutlined } from "@ant-design/icons";
 import Logo from "../../components/icons/Logo";
-import { loginUser } from "../../services/auth.service";
+import { loginUser, selfUser } from "../../services/auth.service";
 import { zodValidator } from "../../utils/common";
 import { loginSchema } from "../../validation/login.validation";
 import type { Credentials } from "../../utils/types";
@@ -19,6 +19,10 @@ import { toast } from "react-toastify";
 
 const LoginPage = () => {
   const callbackLoginSuccess = () => {
+    //self api calling
+    // store in user state
+    selfRefetch();
+    console.log(selfData);
     toast.success("Logged in successfully!");
   };
 
@@ -29,6 +33,8 @@ const LoginPage = () => {
     callbackLoginSuccess,
     callbackLoginError
   );
+
+  const { data: selfData, refetch: selfRefetch } = selfUser();
 
   const handlerSubmit = (values: Credentials) => {
     try {
