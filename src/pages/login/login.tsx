@@ -11,8 +11,34 @@ import {
 } from "antd";
 import { LockFilled, LockOutlined, UserOutlined } from "@ant-design/icons";
 import Logo from "../../components/icons/Logo";
+import { loginUser } from "../../services/auth.service";
+import { zodValidator } from "../../utils/common";
+import { loginSchema } from "../../validation/login.validation";
+import type { Credentials } from "../../utils/types";
+import { toast } from "react-toastify";
 
 const LoginPage = () => {
+  const callbackLoginSuccess = () => {
+    toast.success("Logged in successfully!");
+  };
+
+  const callbackLoginError = (message: string) => {
+    toast.error(message);
+  };
+  const { mutate: loginUserMutate, isPending: loginIsPending } = loginUser(
+    callbackLoginSuccess,
+    callbackLoginError
+  );
+
+  const handlerSubmit = (values: Credentials) => {
+    try {
+      const parsed = loginSchema.parse(values); // full validation
+      loginUserMutate(parsed);
+    } catch (err) {
+      toast.error(`Validation failed: ${err}`);
+    }
+  };
+
   return (
     <>
       {/* <h1>Sign in</h1>
@@ -37,7 +63,7 @@ const LoginPage = () => {
             <Logo />
           </Layout.Content>
           <Card
-            bordered={false}
+            variant="borderless"
             style={{ width: 300 }}
             title={
               <Space
@@ -52,33 +78,46 @@ const LoginPage = () => {
               </Space>
             }
           >
-            <Form>
-              {/* <Alert
-                style={{ marginBottom: 24 }}
-                type="error"
-                // message={error?.message}
-              /> */}
+            <Form
+              initialValues={{
+                remember: true,
+                // username: "test",
+                // password: "test",
+              }}
+              onFinish={handlerSubmit}
+            >
+              {/* {loginIsError && (
+                <Alert
+                  style={{ marginBottom: 24 }}
+                  type="error"
+                  message={logginError?.message}
+                />
+              )} */}
               <Form.Item
-                name="username"
+                name="userName"
                 rules={[
                   {
-                    required: true,
-                    message: "Please input your Username",
-                  },
-                  {
-                    type: "email",
-                    message: "Email is not valid",
+                    validator: zodValidator("userName"),
                   },
                 ]}
               >
-                <Input prefix={<UserOutlined />} placeholder="Username" />
+                <Input prefix={<UserOutlined />} placeholder="userName" />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                rules={[
+                  {
+                    validator: zodValidator("email"),
+                  },
+                ]}
+              >
+                <Input prefix={<UserOutlined />} placeholder="Email" />
               </Form.Item>
               <Form.Item
                 name="password"
                 rules={[
                   {
-                    required: true,
-                    message: "Please input your password",
+                    validator: zodValidator("password"),
                   },
                 ]}
               >
@@ -100,7 +139,7 @@ const LoginPage = () => {
                   type="primary"
                   htmlType="submit"
                   style={{ width: "100%" }}
-                  //   loading={isPending}
+                  loading={loginIsPending}
                 >
                   Log in
                 </Button>
