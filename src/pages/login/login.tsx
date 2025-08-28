@@ -41,7 +41,7 @@ const LoginPage = () => {
 
     setUser(selfDataPromise.data);
 
-    toast.success("Logged in successfully!");
+    // toast.success("Logged in successfully!");
   };
 
   const callbackLoginError = (message: string) => {

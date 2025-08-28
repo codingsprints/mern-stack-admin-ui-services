@@ -7,6 +7,7 @@ import Dashboard from "./layouts/Dashboard";
 
 export const router = createBrowserRouter([
   {
+    // protected router - login then access
     path: "/",
     element: <Dashboard />,
     children: [
@@ -21,6 +22,7 @@ export const router = createBrowserRouter([
     ],
   },
   {
+    // not protected router - without login
     path: "/auth",
     element: <NonAuth />,
     children: [
