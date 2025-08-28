@@ -3,7 +3,7 @@ import { authQueryKeys } from "../constant/query-keys/auth.query-keys";
 import { axiosInstance } from "../utils/axios";
 import { authEndpoint } from "../constant/api-endpoint/auth.api-endpoint";
 import type { Credentials } from "../utils/types";
-import type { AxiosError } from "axios";
+import { AxiosError } from "axios";
 import { toast } from "react-toastify";
 
 export const loginUser = (
@@ -33,6 +33,23 @@ export const loginUser = (
   });
 };
 
+export const selfUserRoot = () => {
+  return useQuery({
+    queryKey: [authQueryKeys.selfUserRoot],
+    queryFn: async () => {
+      const { data } = await axiosInstance.get(authEndpoint.selfRoot);
+      return data;
+    },
+    enabled: false,
+    retry: (failureCount: number, error) => {
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        return false;
+      }
+      return failureCount < 3;
+    },
+  });
+};
+
 export const selfUser = () => {
   return useQuery({
     queryKey: [authQueryKeys.selfUser],
@@ -40,13 +57,13 @@ export const selfUser = () => {
       const { data } = await axiosInstance.get(authEndpoint.self);
       return data;
     },
-    enabled: false,
-    // retry: (failureCount: number, error) => {
-    //   if (error instanceof AxiosError && error.response?.status === 401) {
-    //     return false;
-    //   }
-    //   return failureCount < 3;
-    // },
+    // enabled: false,
+    retry: (failureCount: number, error) => {
+      if (error instanceof AxiosError && error.response?.status === 401) {
+        return false;
+      }
+      return failureCount < 3;
+    },
   });
 };
 

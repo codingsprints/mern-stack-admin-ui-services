@@ -1,14 +1,12 @@
 import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
 import { Outlet } from "react-router-dom";
 import { useAuthStore } from "../store";
-import { AxiosError } from "axios";
-import { selfUser } from "../services/auth.service";
+import { selfUserRoot } from "../services/auth.service";
 
 const Root = () => {
   const { setUser } = useAuthStore();
 
-  const { data: selfUserData, isLoading: selfUserIsLoading } = selfUser();
+  const { data: selfUserData, isLoading: selfUserIsLoading } = selfUserRoot();
 
   useEffect(() => {
     if (selfUserData) {

@@ -7,6 +7,7 @@ import Dashboard from "./layouts/Dashboard";
 import Root from "./layouts/Root";
 
 export const router = createBrowserRouter([
+  // Maintaining Authentication user State on Page Refresh
   {
     path: "/",
     element: <Root />,
