@@ -44,7 +44,10 @@ export const selfUser = () => {
   });
 };
 
-export const logoutUser = () => {
+export const logoutUser = (
+  callbackLogOutSuccess: () => void,
+  callbackLogOutError: (message: string) => void
+) => {
   return useMutation({
     mutationKey: [authQueryKeys.logoutUser],
     mutationFn: async () => {
@@ -52,7 +55,7 @@ export const logoutUser = () => {
       return data;
     },
     onSuccess: async () => {
-      toast.success("user logout successfully!!");
+      callbackLogOutSuccess();
     },
     onError(error) {
       const err = error as AxiosError<any>; // cast error to AxiosError
@@ -60,9 +63,9 @@ export const logoutUser = () => {
       if (err.response) {
         console.log("Data:", err);
         console.log("Data:", err?.response?.data?.error[0]?.message);
-        toast.error(err?.response?.data?.error[0]?.message);
+        callbackLogOutError(err?.response?.data?.error[0]?.message);
       } else {
-        toast.error(err.message);
+        callbackLogOutError(err.message);
       }
     },
   });

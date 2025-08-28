@@ -23,8 +23,6 @@ const LoginPage = () => {
   const { setUser, logout: logoutFromStore } = useAuthStore();
   const { isAllowed } = usePermission();
 
-  const { mutate: logoutUserMuate } = logoutUser();
-
   const callbackLoginSuccess = async () => {
     //self api calling
     // store in user state
@@ -38,7 +36,6 @@ const LoginPage = () => {
     console.log(selfDataPromise?.data?.data?.selfDto?.role);
     if (!isAllowed(selfDataPromise?.data?.data?.selfDto)) {
       logoutUserMuate();
-      logoutFromStore();
       return;
     }
 
@@ -50,9 +47,24 @@ const LoginPage = () => {
   const callbackLoginError = (message: string) => {
     toast.error(message);
   };
+
+  const callbackLogOutSuccess = async () => {
+    logoutFromStore();
+    return;
+  };
+
+  const callbackLogOutError = async (message: string) => {
+    toast.error(message);
+  };
+
   const { mutate: loginUserMutate, isPending: loginIsPending } = loginUser(
     callbackLoginSuccess,
     callbackLoginError
+  );
+
+  const { mutate: logoutUserMuate } = logoutUser(
+    callbackLogOutSuccess,
+    callbackLogOutError
   );
 
   const { refetch: selfRefetch } = selfUser();
