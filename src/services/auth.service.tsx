@@ -78,15 +78,14 @@ export const logoutUser = (
       return data;
     },
     onSuccess: async () => {
-      callbackLogOutSuccess();
+      await callbackLogOutSuccess();
     },
-    onError(error) {
-      const err = error as AxiosError<any>; // cast error to AxiosError
-
+    onError: (error) => {
+      const err = error as AxiosError<any>;
       if (err.response) {
-        console.log("Data:", err);
-        console.log("Data:", err?.response?.data?.error[0]?.message);
-        callbackLogOutError(err?.response?.data?.error[0]?.message);
+        callbackLogOutError(
+          err?.response?.data?.error?.[0]?.message || "Logout failed"
+        );
       } else {
         callbackLogOutError(err.message);
       }
