@@ -1,10 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useAuthStore } from "../store";
+import {
+  Avatar,
+  Badge,
+  Dropdown,
+  Flex,
+  Layout,
+  Menu,
+  Space,
+  theme,
+} from "antd";
+import { getMenuItems } from "../utils/commonFunction";
+import Sider from "antd/es/layout/Sider";
+import Logo from "../components/icons/Logo";
+import { Content, Footer, Header } from "antd/es/layout/layout";
+import { BellFilled } from "@ant-design/icons";
+import { logoutUser } from "../services/auth.service";
+import { toast } from "react-toastify";
 
 const Dashboard = () => {
+  const [collapsed, setCollapsed] = useState(false);
   // call getself
   const { user } = useAuthStore();
+  const { logout: logoutFromStore } = useAuthStore();
+
+  const {
+    token: { colorBgContainer },
+  } = theme.useToken();
+
+  const callbackLogOutSuccess = () => {
+    logoutFromStore();
+    return;
+  };
+
+  const callbackLogOutError = async (message: string) => {
+    toast.error(message);
+  };
 
   if (user === null) {
     return (
@@ -16,11 +48,82 @@ const Dashboard = () => {
     );
   }
 
+  const items = getMenuItems(user.role);
+
+  const { mutate: logoutUserMuate } = logoutUser(
+    callbackLogOutSuccess,
+    callbackLogOutError
+  );
+
   return (
     <div>
-      <h1>Dashboard Components</h1>
+      <Layout style={{ minHeight: "100vh" }}>
+        <Sider
+          collapsible
+          theme="light"
+          collapsed={collapsed}
+          onCollapse={(value) => setCollapsed(value)}
+        >
+          <div className="logo">
+            <Logo />
+          </div>
 
-      <Outlet />
+          <Menu
+            theme="light"
+            defaultSelectedKeys={[location.pathname]}
+            mode="inline"
+            items={items}
+          />
+        </Sider>
+        <Layout>
+          <Header
+            style={{
+              paddingLeft: "16px",
+              paddingRight: "16px",
+              background: colorBgContainer,
+            }}
+          >
+            <Flex gap="middle" align="start" justify="space-between">
+              {/* <Badge
+                text={
+                  user.role === "admin" ? "You are an admin" : user.tenant?.name
+                }
+                status="success"
+              /> */}
+              <Space size={16}>
+                <Badge dot={true}>
+                  <BellFilled />
+                </Badge>
+                <Dropdown
+                  menu={{
+                    items: [
+                      {
+                        key: "logout",
+                        label: "Logout",
+                        onClick: () => logoutUserMuate(),
+                      },
+                    ],
+                  }}
+                  placement="bottomRight"
+                >
+                  <Avatar
+                    style={{
+                      backgroundColor: "#fde3cf",
+                      color: "#f56a00",
+                    }}
+                  >
+                    U
+                  </Avatar>
+                </Dropdown>
+              </Space>
+            </Flex>
+          </Header>
+          <Content style={{ margin: "24px" }}>
+            <Outlet />
+          </Content>
+          <Footer style={{ textAlign: "center" }}>Mernspace pizza shop</Footer>
+        </Layout>
+      </Layout>
     </div>
   );
 };

@@ -5,6 +5,11 @@ import LoginPage from "./pages/login/login";
 import NonAuth from "./layouts/NonAuth";
 import Dashboard from "./layouts/Dashboard";
 import Root from "./layouts/Root";
+import Users from "./pages/users/Users";
+import Tenants from "./pages/tenants/Tenants";
+import Products from "./pages/products/Products";
+import Orders from "./pages/orders/Orders";
+import SingleOrder from "./pages/orders/SingleOrder";
 
 export const router = createBrowserRouter([
   // Maintaining Authentication user State on Page Refresh
@@ -24,6 +29,26 @@ export const router = createBrowserRouter([
           {
             path: "categories",
             element: <CategoriesPage />,
+          },
+          {
+            path: "/users",
+            element: <Users />,
+          },
+          {
+            path: "/restaurants",
+            element: <Tenants />,
+          },
+          {
+            path: "/products",
+            element: <Products />,
+          },
+          {
+            path: "/orders",
+            element: <Orders />,
+          },
+          {
+            path: "/orders/:orderId",
+            element: <SingleOrder />,
           },
         ],
       },
