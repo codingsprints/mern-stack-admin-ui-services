@@ -18,6 +18,7 @@ import { Content, Footer, Header } from "antd/es/layout/layout";
 import { BellFilled } from "@ant-design/icons";
 import { logoutUser } from "../services/auth.service";
 import { toast } from "react-toastify";
+import { useLogoutUser } from "../hooks/useLogoutUser";
 
 const Dashboard = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -29,7 +30,7 @@ const Dashboard = () => {
     token: { colorBgContainer },
   } = theme.useToken();
 
-  const callbackLogOutSuccess = () => {
+  const callbackLogOutSuccess = async () => {
     logoutFromStore();
     return;
   };
@@ -37,6 +38,11 @@ const Dashboard = () => {
   const callbackLogOutError = async (message: string) => {
     toast.error(message);
   };
+
+  const { mutate: logoutUserMuate } = useLogoutUser(
+    callbackLogOutSuccess,
+    callbackLogOutError
+  );
 
   if (user === null) {
     return (
@@ -48,16 +54,13 @@ const Dashboard = () => {
     );
   }
 
-  const items = getMenuItems(user.role);
+  console.log(user);
 
-  const { mutate: logoutUserMuate } = logoutUser(
-    callbackLogOutSuccess,
-    callbackLogOutError
-  );
+  const items = getMenuItems(user.role);
 
   return (
     <div>
-      <Layout style={{ minHeight: "100vh" }}>
+      <Layout style={{ minHeight: "100vh", background: colorBgContainer }}>
         <Sider
           collapsible
           theme="light"
@@ -85,7 +88,9 @@ const Dashboard = () => {
           >
             <Flex gap="middle" align="start" justify="space-between">
               <Badge
-                text={user.role === "admin" ? "You are an admin" : "Your Name"}
+                text={
+                  user.role === "admin" ? "You are an admin" : user.tenant?.name
+                }
                 status="success"
               />
               <Space size={16}>

@@ -39,7 +39,7 @@ const LoginPage = () => {
       return;
     }
 
-    setUser(selfDataPromise.data);
+    setUser(selfDataPromise.data?.data?.selfDto);
 
     // toast.success("Logged in successfully!");
   };
