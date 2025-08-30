@@ -6,11 +6,13 @@ import {
 import {
   Breadcrumb,
   Button,
+  Drawer,
   Flex,
   Form,
   Space,
   Spin,
   Table,
+  theme,
   Typography,
 } from "antd";
 import { Link, Navigate } from "react-router-dom";
@@ -18,13 +20,17 @@ import { FetchUser } from "../../services/user.service";
 import { userTableColumns } from "../../components/users/UsersTable";
 import type { User } from "../../utils/types";
 import { useAuthStore } from "../../store";
-import UsersFilter from "./UserFilter";
+import UsersFilter from "./UsersFilter";
 import { useState } from "react";
 
 const Users = () => {
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
   const [drawerOpen, setDrawerOpen] = useState(false);
+
+  const {
+    token: { colorBgLayout },
+  } = theme.useToken();
 
   const {
     data: fetchUserData,
@@ -78,6 +84,36 @@ const Users = () => {
           dataSource={fetchUserData?.data?.getAllUsersDto}
           rowKey={"id"}
         />
+
+        <Drawer
+          title={"Add User"}
+          width={720}
+          styles={{ body: { backgroundColor: colorBgLayout } }}
+          //   destroyOnClose={true}
+          open={drawerOpen}
+          onClose={() => {
+            form.resetFields();
+            // setCurrentEditingUser(null);
+            setDrawerOpen(false);
+          }}
+          extra={
+            <Space>
+              <Button
+                onClick={() => {
+                  form.resetFields();
+                  setDrawerOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="primary">Submit</Button>
+            </Space>
+          }
+        >
+          <Form layout="vertical" form={form}>
+            {/* <UserForm isEditMode={!!currentEditingUser} /> */}
+          </Form>
+        </Drawer>
       </Space>
     </>
   );
