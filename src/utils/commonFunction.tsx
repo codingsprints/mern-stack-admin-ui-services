@@ -1,9 +1,10 @@
-import Icon, { BellFilled } from "@ant-design/icons";
+import Icon, { BellFilled, UserAddOutlined } from "@ant-design/icons";
 import { NavLink } from "react-router-dom";
 import Home from "../components/icons/Home";
 import { foodIcon } from "../components/icons/FoodIcon";
 import BasketIcon from "../components/icons/BasketIcon";
 import GiftIcon from "../components/icons/GiftIcon";
+import UserIcon from "../components/icons/UserIcon";
 
 export const getMenuItems = (role: string) => {
   const baseItems = [
@@ -11,6 +12,11 @@ export const getMenuItems = (role: string) => {
       key: "/",
       icon: <Icon component={Home} />,
       label: <NavLink to="/">Home</NavLink>,
+    },
+    {
+      key: "/users",
+      icon: <Icon component={UserIcon} />,
+      label: <NavLink to="/users">User</NavLink>,
     },
 
     {
