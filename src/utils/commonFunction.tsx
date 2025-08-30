@@ -14,12 +14,6 @@ export const getMenuItems = (role: string) => {
       label: <NavLink to="/">Home</NavLink>,
     },
     {
-      key: "/users",
-      icon: <Icon component={UserIcon} />,
-      label: <NavLink to="/users">User</NavLink>,
-    },
-
-    {
       key: "/products",
       icon: <Icon component={foodIcon} />,
       label: <NavLink to="/products">Products</NavLink>,
@@ -36,21 +30,21 @@ export const getMenuItems = (role: string) => {
     },
   ];
 
-  //   if (role === "admin") {
-  //     const menus = [...baseItems];
-  //     menus.splice(1, 0, {
-  //       key: "/users",
-  //       icon: <Icon component={UserIcon} />,
-  //       label: <NavLink to="/users">Users</NavLink>,
-  //     });
-  //     menus.splice(2, 0, {
-  //       key: "/restaurants",
-  //       icon: <Icon component={foodIcon} />,
-  //       label: <NavLink to="/restaurants">Restaurants</NavLink>,
-  //     });
+  if (role === "admin") {
+    const menus = [...baseItems];
+    menus.splice(1, 0, {
+      key: "/users",
+      icon: <Icon component={UserIcon} />,
+      label: <NavLink to="/users">Users</NavLink>,
+    });
+    menus.splice(2, 0, {
+      key: "/restaurants",
+      icon: <Icon component={foodIcon} />,
+      label: <NavLink to="/restaurants">Restaurants</NavLink>,
+    });
 
-  //     return menus;
-  //   }
+    return menus;
+  }
 
   return baseItems;
 };

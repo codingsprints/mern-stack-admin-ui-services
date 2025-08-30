@@ -1,13 +1,20 @@
 import { RightOutlined } from "@ant-design/icons";
 import { Breadcrumb, Button, Flex, Space, Table } from "antd";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { FetchUser } from "../../services/user.service";
 import { userTableColumns } from "../../components/users/UsersTable";
 import type { User } from "../../utils/types";
+import { useAuthStore } from "../../store";
 
 const Users = () => {
   const { data: fetchUserData } = FetchUser();
   console.log(fetchUserData);
+
+  const { user } = useAuthStore();
+
+  if (user?.role !== "admin") {
+    return <Navigate to="/" replace={true} />;
+  }
 
   return (
     <>
