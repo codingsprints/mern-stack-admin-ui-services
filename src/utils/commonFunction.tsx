@@ -1,4 +1,8 @@
-import Icon, { BellFilled, UserAddOutlined } from "@ant-design/icons";
+import Icon, {
+  BellFilled,
+  ProductFilled,
+  UserAddOutlined,
+} from "@ant-design/icons";
 import { NavLink } from "react-router-dom";
 import Home from "../components/icons/Home";
 import { foodIcon } from "../components/icons/FoodIcon";
@@ -15,7 +19,7 @@ export const getMenuItems = (role: string) => {
     },
     {
       key: "/products",
-      icon: <Icon component={foodIcon} />,
+      icon: <Icon component={ProductFilled} />,
       label: <NavLink to="/products">Products</NavLink>,
     },
     {

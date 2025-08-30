@@ -22,11 +22,15 @@ import type { User } from "../../utils/types";
 import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
 import { useState } from "react";
+import UserForm from "./form/UserForm";
 
 const Users = () => {
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
   const [drawerOpen, setDrawerOpen] = useState(false);
+  const [currentEditingUser, setCurrentEditingUser] = useState<User | null>(
+    null
+  );
 
   const {
     token: { colorBgLayout },
@@ -80,7 +84,26 @@ const Users = () => {
         </UsersFilter>
         {/* </Form> */}
         <Table
-          columns={[...userTableColumns]}
+          columns={[
+            ...userTableColumns,
+            {
+              title: "Actions",
+              render: (_: string, record: User) => {
+                return (
+                  <Space>
+                    <Button
+                      type="link"
+                      onClick={() => {
+                        setCurrentEditingUser(record);
+                      }}
+                    >
+                      Edit
+                    </Button>
+                  </Space>
+                );
+              },
+            },
+          ]}
           dataSource={fetchUserData?.data?.getAllUsersDto}
           rowKey={"id"}
         />
@@ -89,7 +112,7 @@ const Users = () => {
           title={"Add User"}
           width={720}
           styles={{ body: { backgroundColor: colorBgLayout } }}
-          //   destroyOnClose={true}
+          destroyOnHidden={true}
           open={drawerOpen}
           onClose={() => {
             form.resetFields();
@@ -111,7 +134,7 @@ const Users = () => {
           }
         >
           <Form layout="vertical" form={form}>
-            {/* <UserForm isEditMode={!!currentEditingUser} /> */}
+            <UserForm isEditMode={!!currentEditingUser} />
           </Form>
         </Drawer>
       </Space>
