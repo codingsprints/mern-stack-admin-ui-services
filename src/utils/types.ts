@@ -1,5 +1,4 @@
 export type Credentials = {
-  userName: string;
   email: string;
   password: string;
 };
@@ -37,5 +36,14 @@ export type User = {
   firstName: string;
   lastName: string;
   createdAt: string;
-  // tenant: Tenant | null;
+  tenant: Tenant | null;
+};
+
+export type CreateUserData = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  password: string;
+  role: string;
+  tenantId: number;
 };

@@ -132,16 +132,7 @@ const LoginPage = () => {
                   message={logginError?.message}
                 />
               )} */}
-              <Form.Item
-                name="userName"
-                rules={[
-                  {
-                    validator: zodValidator("userName"),
-                  },
-                ]}
-              >
-                <Input prefix={<UserOutlined />} placeholder="userName" />
-              </Form.Item>
+
               <Form.Item
                 name="email"
                 rules={[

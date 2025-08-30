@@ -16,7 +16,7 @@ import {
   Typography,
 } from "antd";
 import { Link, Navigate } from "react-router-dom";
-import { FetchUser } from "../../services/user.service";
+import { createUser, FetchUser } from "../../services/user.service";
 import { userTableColumns } from "../../components/users/UsersTable";
 import type { User } from "../../utils/types";
 import { useAuthStore } from "../../store";
@@ -42,13 +42,28 @@ const Users = () => {
     isError: fetchDataIsError,
     error: fetchDataError,
   } = FetchUser();
-  console.log(fetchUserData);
+
+  const { mutate: userMutate } = createUser();
 
   const { user } = useAuthStore();
 
   if (user?.role !== "admin") {
     return <Navigate to="/" replace={true} />;
   }
+
+  const onHandleSubmit = async () => {
+    await form.validateFields();
+    // const isEditMode = !!currentEditingUser;
+    // if (isEditMode) {
+    //   await updateUserMutation(form.getFieldsValue());
+    // } else {
+    console.log("form data", form.getFieldsValue());
+    await userMutate(form.getFieldsValue());
+    // }
+    form.resetFields();
+    // setCurrentEditingUser(null);
+    setDrawerOpen(false);
+  };
 
   return (
     <>
@@ -129,7 +144,9 @@ const Users = () => {
               >
                 Cancel
               </Button>
-              <Button type="primary">Submit</Button>
+              <Button type="primary" onClick={onHandleSubmit}>
+                Submit
+              </Button>
             </Space>
           }
         >

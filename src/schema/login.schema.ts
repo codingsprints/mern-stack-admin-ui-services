@@ -1,17 +1,6 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  userName: z
-    .string()
-    .trim()
-    .min(1, "Username is required")
-    .min(3, "Username must be between 3 and 15 characters")
-    .max(15, "Username must be between 3 and 15 characters")
-    .regex(
-      /^[a-zA-Z0-9]+$/,
-      "Username must only contain alphanumeric characters"
-    ),
-
   email: z
     .email("Invalid email format")
     .trim()

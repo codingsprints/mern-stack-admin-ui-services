@@ -43,12 +43,12 @@ function HomePage() {
         <Col span={12}>
           <Row gutter={[16, 16]}>
             <Col span={12}>
-              <Card bordered={false}>
+              <Card variant="borderless">
                 <Statistic title="Total orders" value={52} />
               </Card>
             </Col>
             <Col span={12}>
-              <Card bordered={false}>
+              <Card variant="borderless">
                 <Statistic
                   title="Total sale"
                   value={70000}
