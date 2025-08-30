@@ -60,28 +60,28 @@ const UserForm = ({ isEditMode = false }: { isEditMode: boolean }) => {
                 </Col>
               </Row>
             </Card>
-            {!isEditMode && (
-              <Card title="Security info" bordered={false}>
-                <Row gutter={20}>
-                  <Col span={12}>
-                    <Form.Item
-                      label="Passoword"
-                      name="password"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Password required",
-                        },
-                      ]}
-                    >
-                      <Input size="large" type="password" />
-                    </Form.Item>
-                  </Col>
-                </Row>
-              </Card>
-            )}
+            {/* {!isEditMode && ( */}
+            <Card title="Security info" variant="borderless">
+              <Row gutter={20}>
+                <Col span={12}>
+                  <Form.Item
+                    label="Passoword"
+                    name="password"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Password required",
+                      },
+                    ]}
+                  >
+                    <Input size="large" type="password" />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Card>
+            {/* )} */}
 
-            <Card title="Role" bordered={false}>
+            <Card title="Role" variant="borderless">
               <Row gutter={20}>
                 <Col span={12}>
                   <Form.Item
@@ -107,36 +107,36 @@ const UserForm = ({ isEditMode = false }: { isEditMode: boolean }) => {
                     </Select>
                   </Form.Item>
                 </Col>
-                {selectedRole === "manager" && (
-                  <Col span={12}>
-                    <Form.Item
-                      label="Restaurant"
-                      name="tenantId"
-                      rules={[
-                        {
-                          required: true,
-                          message: "Restaurant is required",
-                        },
-                      ]}
+                {/* {selectedRole === "manager" && ( */}
+                <Col span={12}>
+                  <Form.Item
+                    label="Restaurant"
+                    name="tenantId"
+                    rules={[
+                      {
+                        required: true,
+                        message: "Restaurant is required",
+                      },
+                    ]}
+                  >
+                    <Select
+                      size="large"
+                      style={{ width: "100%" }}
+                      allowClear={true}
+                      onChange={() => {}}
+                      placeholder="Select restaurant"
                     >
-                      <Select
-                        size="large"
-                        style={{ width: "100%" }}
-                        allowClear={true}
-                        onChange={() => {}}
-                        placeholder="Select restaurant"
-                      >
-                        {fetchTenantData?.data?.tenantGetAllDto?.map(
-                          (tenant: Tenant) => (
-                            <Select.Option value={tenant.id} key={tenant.id}>
-                              {tenant.name}
-                            </Select.Option>
-                          )
-                        )}
-                      </Select>
-                    </Form.Item>
-                  </Col>
-                )}
+                      {fetchTenantData?.data?.tenantGetAllDto?.map(
+                        (tenant: Tenant) => (
+                          <Select.Option value={tenant.id} key={tenant.id}>
+                            {tenant.name}
+                          </Select.Option>
+                        )
+                      )}
+                    </Select>
+                  </Form.Item>
+                </Col>
+                {/* )} */}
               </Row>
             </Card>
           </Space>
