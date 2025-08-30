@@ -1,6 +1,7 @@
 import { Card, Col, Form, Input, Row, Select, Space } from "antd";
 import type { Tenant } from "../../../utils/types";
 import { FetchTenants } from "../../../services/tenants.service";
+import { LockOutlined } from "@ant-design/icons";
 
 const UserForm = ({ isEditMode = false }: { isEditMode: boolean }) => {
   const selectedRole = Form.useWatch("role");
@@ -74,7 +75,11 @@ const UserForm = ({ isEditMode = false }: { isEditMode: boolean }) => {
                       },
                     ]}
                   >
-                    <Input size="large" type="password" />
+                    <Input.Password
+                      prefix={<LockOutlined />}
+                      placeholder="Password"
+                      size="large"
+                    />
                   </Form.Item>
                 </Col>
               </Row>

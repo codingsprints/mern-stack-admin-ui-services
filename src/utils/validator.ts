@@ -1,5 +1,5 @@
 import { ZodError } from "zod";
-import { loginSchema } from "../validation/login.validation";
+import { loginSchema } from "../schema/login.schema";
 
 // Field-level validator for AntD <Form.Item>
 export const zodValidator =

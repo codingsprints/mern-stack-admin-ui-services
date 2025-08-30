@@ -12,8 +12,8 @@ import {
 import { LockFilled, LockOutlined, UserOutlined } from "@ant-design/icons";
 import Logo from "../../components/icons/Logo";
 import { loginUser, logoutUser, selfUser } from "../../services/auth.service";
-import { zodValidator } from "../../utils/common";
-import { loginSchema } from "../../validation/login.validation";
+import { zodValidator } from "../../utils/validator";
+import { loginSchema } from "../../schema/login.schema";
 import type { Credentials } from "../../utils/types";
 import { toast } from "react-toastify";
 import { useAuthStore } from "../../store";
