@@ -4,7 +4,9 @@ import { useAuthStore } from "../store";
 const NonAuth = () => {
   const { user } = useAuthStore();
   if (user !== null) {
-    return <Navigate to={`/`} replace={true} />;
+    const returnTo =
+      new URLSearchParams(location.search).get("returnTo") || "/";
+    return <Navigate to={returnTo} replace={true} />;
   }
 
   return (

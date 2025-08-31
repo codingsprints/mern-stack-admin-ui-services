@@ -47,8 +47,8 @@ const Dashboard = () => {
   if (user === null) {
     return (
       <Navigate
-        to={`/auth/login`}
-        // to={`/auth/login?returnTo=${location.pathname}`}
+        // to={`/auth/login`}
+        to={`/auth/login?returnTo=${location.pathname}`}
         replace={true}
       />
     );
