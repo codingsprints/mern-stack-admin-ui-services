@@ -47,3 +47,15 @@ export type CreateUserData = {
   role: string;
   tenantId: number;
 };
+
+export type FieldData = {
+  name: string[];
+  value?: string;
+};
+
+export type userQueryParams = {
+  perPage: number;
+  currentPage: number;
+  q?: string;
+  role?: string;
+};

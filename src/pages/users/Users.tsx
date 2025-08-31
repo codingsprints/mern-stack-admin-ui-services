@@ -18,7 +18,7 @@ import {
 import { Link, Navigate } from "react-router-dom";
 import { createUser, FetchUser } from "../../services/user.service";
 import { userTableColumns } from "../../components/users/UsersTable";
-import type { User } from "../../utils/types";
+import type { FieldData, User, userQueryParams } from "../../utils/types";
 import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
 import { useState } from "react";
@@ -32,9 +32,11 @@ const Users = () => {
   const [currentEditingUser, setCurrentEditingUser] = useState<User | null>(
     null
   );
-  const [queryParams, setQueryParams] = useState({
+  const [queryParams, setQueryParams] = useState<userQueryParams>({
     perPage: PER_PAGE,
     currentPage: CURRENT_PAGE,
+    q: "",
+    role: "",
   });
 
   const {
@@ -46,7 +48,7 @@ const Users = () => {
     isFetching: fetchDataIsFetching,
     isError: fetchDataIsError,
     error: fetchDataError,
-  } = FetchUser(String(queryParams.perPage), String(queryParams.currentPage));
+  } = FetchUser(queryParams);
   console.log(fetchUserData);
 
   const { mutate: userMutate } = createUser();
@@ -71,6 +73,31 @@ const Users = () => {
     setDrawerOpen(false);
   };
 
+  const onFilterChange = (changedFields: FieldData[]) => {
+    const changedFilterFields = changedFields
+      .map((item) => ({
+        [item.name[0]]: item.value,
+      }))
+      .reduce((acc, item) => ({ ...acc, ...item }), {});
+    console.log(changedFilterFields);
+
+    setQueryParams((prev) => ({
+      ...prev,
+      ...changedFilterFields,
+      currentPage: 1,
+    }));
+
+    // if ("q" in changedFilterFields) {
+    //   debouncedQUpdate(changedFilterFields.q);
+    // } else {
+    //   setQueryParams((prev) => ({
+    //     ...prev,
+    //     ...changedFilterFields,
+    //     currentPage: 1,
+    //   }));
+    // }
+  };
+
   return (
     <>
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
@@ -93,19 +120,19 @@ const Users = () => {
             </Typography.Text>
           )}
         </Flex>
-        {/* <Form form={filterForm} onFieldsChange={onFilterChange}> */}
         {fetchUserData?.data?.getAllUsersDto ? (
           <>
-            <UsersFilter>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => setDrawerOpen(true)}
-              >
-                Add User
-              </Button>
-            </UsersFilter>
-            {/* </Form> */}
+            <Form form={filterForm} onFieldsChange={onFilterChange}>
+              <UsersFilter>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => setDrawerOpen(true)}
+                >
+                  Add User
+                </Button>
+              </UsersFilter>
+            </Form>
             <Table
               columns={[
                 ...userTableColumns,

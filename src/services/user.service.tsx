@@ -9,14 +9,14 @@ import { axiosInstance } from "../utils/axios";
 import { userApiService } from "../constant/api-endpoint/user.api-endpoint";
 import { toast } from "react-toastify";
 import type { AxiosError } from "axios";
-import type { CreateUserData } from "../utils/types";
+import type { CreateUserData, userQueryParams } from "../utils/types";
 
-export const FetchUser = (perPage: string, currentPage: string) => {
+export const FetchUser = (queryParams: userQueryParams) => {
   return useQuery({
-    queryKey: [userQueryKeys.fetchUser, perPage, currentPage],
+    queryKey: [userQueryKeys.fetchUser, queryParams],
     queryFn: async () => {
       const { data } = await axiosInstance.get(
-        userApiService.fetchUser(perPage, currentPage)
+        userApiService.fetchUser(queryParams)
       );
       return data;
     },
