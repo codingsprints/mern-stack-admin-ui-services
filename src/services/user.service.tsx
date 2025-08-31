@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { userQueryKeys } from "../constant/query-keys/user.query-keys";
 import { axiosInstance } from "../utils/axios";
 import { userApiService } from "../constant/api-endpoint/user.api-endpoint";
@@ -6,13 +11,16 @@ import { toast } from "react-toastify";
 import type { AxiosError } from "axios";
 import type { CreateUserData } from "../utils/types";
 
-export const FetchUser = () => {
+export const FetchUser = (perPage: string, currentPage: string) => {
   return useQuery({
-    queryKey: [userQueryKeys.fetchUser],
+    queryKey: [userQueryKeys.fetchUser, perPage, currentPage],
     queryFn: async () => {
-      const { data } = await axiosInstance.get(userApiService.fetchUser());
+      const { data } = await axiosInstance.get(
+        userApiService.fetchUser(perPage, currentPage)
+      );
       return data;
     },
+    placeholderData: keepPreviousData,
   });
 };
 

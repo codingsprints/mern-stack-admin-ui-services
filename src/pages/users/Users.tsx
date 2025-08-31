@@ -23,6 +23,7 @@ import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
 import { useState } from "react";
 import UserForm from "./form/UserForm";
+import { CURRENT_PAGE, PER_PAGE } from "../../constant/constant";
 
 const Users = () => {
   const [form] = Form.useForm();
@@ -31,6 +32,10 @@ const Users = () => {
   const [currentEditingUser, setCurrentEditingUser] = useState<User | null>(
     null
   );
+  const [queryParams, setQueryParams] = useState({
+    perPage: PER_PAGE,
+    currentPage: CURRENT_PAGE,
+  });
 
   const {
     token: { colorBgLayout },
@@ -41,7 +46,8 @@ const Users = () => {
     isFetching: fetchDataIsFetching,
     isError: fetchDataIsError,
     error: fetchDataError,
-  } = FetchUser();
+  } = FetchUser(String(queryParams.perPage), String(queryParams.currentPage));
+  console.log(fetchUserData);
 
   const { mutate: userMutate } = createUser();
 
@@ -88,41 +94,64 @@ const Users = () => {
           )}
         </Flex>
         {/* <Form form={filterForm} onFieldsChange={onFilterChange}> */}
-        <UsersFilter>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setDrawerOpen(true)}
-          >
-            Add User
-          </Button>
-        </UsersFilter>
-        {/* </Form> */}
-        <Table
-          columns={[
-            ...userTableColumns,
-            {
-              title: "Actions",
-              render: (_: string, record: User) => {
-                return (
-                  <Space>
-                    <Button
-                      type="link"
-                      onClick={() => {
-                        setCurrentEditingUser(record);
-                      }}
-                    >
-                      Edit
-                    </Button>
-                  </Space>
-                );
-              },
-            },
-          ]}
-          dataSource={fetchUserData?.data?.getAllUsersDto}
-          rowKey={"id"}
-        />
-
+        {fetchUserData?.data?.getAllUsersDto ? (
+          <>
+            <UsersFilter>
+              <Button
+                type="primary"
+                icon={<PlusOutlined />}
+                onClick={() => setDrawerOpen(true)}
+              >
+                Add User
+              </Button>
+            </UsersFilter>
+            {/* </Form> */}
+            <Table
+              columns={[
+                ...userTableColumns,
+                {
+                  title: "Actions",
+                  render: (_: string, record: User) => {
+                    return (
+                      <Space>
+                        <Button
+                          type="link"
+                          onClick={() => {
+                            setCurrentEditingUser(record);
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      </Space>
+                    );
+                  },
+                },
+              ]}
+              dataSource={fetchUserData?.data?.getAllUsersDto}
+              rowKey={"id"}
+              pagination={{
+                total: fetchUserData?.data?.total,
+                pageSize: queryParams.perPage,
+                current: queryParams.currentPage,
+                onChange: (page) => {
+                  console.log(page);
+                  setQueryParams((prev) => {
+                    return {
+                      ...prev,
+                      currentPage: page,
+                    };
+                  });
+                },
+                showTotal: (total: number, range: number[]) => {
+                  console.log(total, range);
+                  return `Showing ${range[0]}-${range[1]} of ${total} items`;
+                },
+              }}
+            />
+          </>
+        ) : (
+          <h1>Not Data Found</h1>
+        )}
         <Drawer
           title={"Add User"}
           width={720}
