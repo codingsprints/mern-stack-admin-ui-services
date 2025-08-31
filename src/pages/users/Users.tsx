@@ -16,12 +16,13 @@ import {
   Typography,
 } from "antd";
 import { Link, Navigate } from "react-router-dom";
+import { debounce } from "lodash";
 import { createUser, FetchUser } from "../../services/user.service";
 import { userTableColumns } from "../../components/users/UsersTable";
 import type { FieldData, User, userQueryParams } from "../../utils/types";
 import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import UserForm from "./form/UserForm";
 import { CURRENT_PAGE, PER_PAGE } from "../../constant/constant";
 
@@ -38,6 +39,11 @@ const Users = () => {
     q: "",
     role: "",
   });
+  const debouncedQUpdate = useMemo(() => {
+    return debounce((value: string | undefined) => {
+      setQueryParams((prev) => ({ ...prev, q: value, currentPage: 1 }));
+    }, 500);
+  }, []);
 
   const {
     token: { colorBgLayout },
@@ -80,22 +86,15 @@ const Users = () => {
       }))
       .reduce((acc, item) => ({ ...acc, ...item }), {});
     console.log(changedFilterFields);
-
-    setQueryParams((prev) => ({
-      ...prev,
-      ...changedFilterFields,
-      currentPage: 1,
-    }));
-
-    // if ("q" in changedFilterFields) {
-    //   debouncedQUpdate(changedFilterFields.q);
-    // } else {
-    //   setQueryParams((prev) => ({
-    //     ...prev,
-    //     ...changedFilterFields,
-    //     currentPage: 1,
-    //   }));
-    // }
+    if ("q" in changedFilterFields) {
+      debouncedQUpdate(changedFilterFields.q);
+    } else {
+      setQueryParams((prev) => ({
+        ...prev,
+        ...changedFilterFields,
+        currentPage: 1,
+      }));
+    }
   };
 
   return (
