@@ -15,11 +15,16 @@ import {
   theme,
   Typography,
 } from "antd";
-import React from "react";
-import { Link } from "react-router-dom";
-import { FetchTenants } from "../../services/tenants.service";
+import React, { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
+import { FetchTenantsWithPagination } from "../../services/tenants.service";
 import { TenantTablecolumns } from "../../components/users/TenantTable";
 import TenantFilter from "./TenantsFilter";
+import { CURRENT_PAGE, PER_PAGE } from "../../constant/constant";
+import type { FieldData, tenantQueryParams } from "../../utils/types";
+import { useAuthStore } from "../../store";
+import { debounce } from "lodash";
+import TenantForm from "./form/TenantForm";
 
 const Tenants = () => {
   const {
@@ -28,15 +33,50 @@ const Tenants = () => {
 
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
+  const { user } = useAuthStore();
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [tenantQueryParams, setTenantQueryParams] = useState<tenantQueryParams>(
+    {
+      perPage: PER_PAGE,
+      currentPage: CURRENT_PAGE,
+      q: "",
+    }
+  );
+  const debouncedQUpdate = React.useMemo(() => {
+    return debounce((value: string | undefined) => {
+      setTenantQueryParams((prev) => ({ ...prev, q: value }));
+    }, 500);
+  }, []);
 
-  const [drawerOpen, setDrawerOpen] = React.useState(false);
   const {
     data: fetchTenantData,
     isFetching: fetchTenantIsFetching,
     isError: fetchTenantIsError,
     error: fetchTenantError,
-  } = FetchTenants();
+  } = FetchTenantsWithPagination(tenantQueryParams);
   console.log(fetchTenantData);
+
+  const onFilterChange = (changedFields: FieldData[]) => {
+    const changedFilterFields = changedFields
+      .map((item) => ({
+        [item.name[0]]: item.value,
+      }))
+      .reduce((acc, item) => ({ ...acc, ...item }), {});
+
+    if ("q" in changedFilterFields) {
+      debouncedQUpdate(changedFilterFields.q);
+    } else {
+      setTenantQueryParams((prev) => ({
+        ...prev,
+        ...changedFilterFields,
+        currentPage: 1,
+      }));
+    }
+  };
+
+  if (user?.role !== "admin") {
+    return <Navigate to="/" replace={true} />;
+  }
 
   return (
     <>
@@ -60,20 +100,28 @@ const Tenants = () => {
             </Typography.Text>
           )}
         </Flex>
-        <TenantFilter>
-          <Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setDrawerOpen(true)}
-          >
-            Add Restaurant
-          </Button>
-        </TenantFilter>
-        <Table
-          columns={[...TenantTablecolumns]}
-          dataSource={fetchTenantData?.data?.tenantGetAllDto}
-          rowKey={"id"}
-        />
+        {fetchTenantData?.data?.tenantGetAllDto ? (
+          <>
+            <Form form={filterForm} onFieldsChange={onFilterChange}>
+              <TenantFilter>
+                <Button
+                  type="primary"
+                  icon={<PlusOutlined />}
+                  onClick={() => setDrawerOpen(true)}
+                >
+                  Add Restaurant
+                </Button>
+              </TenantFilter>
+            </Form>
+            <Table
+              columns={[...TenantTablecolumns]}
+              dataSource={fetchTenantData?.data?.tenantGetAllDto}
+              rowKey={"id"}
+            />
+          </>
+        ) : (
+          <h1>Not Data Found</h1>
+        )}
 
         <Drawer
           title={"Create restaurant"}
@@ -101,7 +149,7 @@ const Tenants = () => {
           }
         >
           <Form layout="vertical" form={form}>
-            {/* <UserForm isEditMode={!!currentEditingUser} /> */}
+            <TenantForm />
           </Form>
         </Drawer>
       </Space>

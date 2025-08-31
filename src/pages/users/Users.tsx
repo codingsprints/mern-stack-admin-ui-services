@@ -33,7 +33,7 @@ const Users = () => {
   const [currentEditingUser, setCurrentEditingUser] = useState<User | null>(
     null
   );
-  const [queryParams, setQueryParams] = useState<userQueryParams>({
+  const [userQueryParams, setUserQueryParams] = useState<userQueryParams>({
     perPage: PER_PAGE,
     currentPage: CURRENT_PAGE,
     q: "",
@@ -41,7 +41,7 @@ const Users = () => {
   });
   const debouncedQUpdate = useMemo(() => {
     return debounce((value: string | undefined) => {
-      setQueryParams((prev) => ({ ...prev, q: value, currentPage: 1 }));
+      setUserQueryParams((prev) => ({ ...prev, q: value, currentPage: 1 }));
     }, 500);
   }, []);
 
@@ -54,7 +54,7 @@ const Users = () => {
     isFetching: fetchDataIsFetching,
     isError: fetchDataIsError,
     error: fetchDataError,
-  } = FetchUser(queryParams);
+  } = FetchUser(userQueryParams);
   console.log(fetchUserData);
 
   const { mutate: userMutate } = createUser();
@@ -89,7 +89,7 @@ const Users = () => {
     if ("q" in changedFilterFields) {
       debouncedQUpdate(changedFilterFields.q);
     } else {
-      setQueryParams((prev) => ({
+      setUserQueryParams((prev) => ({
         ...prev,
         ...changedFilterFields,
         currentPage: 1,
@@ -157,11 +157,11 @@ const Users = () => {
               rowKey={"id"}
               pagination={{
                 total: fetchUserData?.data?.total,
-                pageSize: queryParams.perPage,
-                current: queryParams.currentPage,
+                pageSize: userQueryParams.perPage,
+                current: userQueryParams.currentPage,
                 onChange: (page) => {
                   console.log(page);
-                  setQueryParams((prev) => {
+                  setUserQueryParams((prev) => {
                     return {
                       ...prev,
                       currentPage: page,

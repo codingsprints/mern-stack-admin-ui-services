@@ -59,3 +59,9 @@ export type userQueryParams = {
   q?: string;
   role?: string;
 };
+
+export type tenantQueryParams = {
+  perPage: number;
+  currentPage: number;
+  q?: string;
+};
