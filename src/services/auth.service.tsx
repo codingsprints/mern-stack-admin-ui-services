@@ -22,12 +22,14 @@ export const loginUser = (
     onError(error) {
       const err = error as AxiosError<any>; // cast error to AxiosError
 
-      if (err.response) {
+      if (err.response?.data?.error[0]?.message) {
         console.log("Data:", err);
         console.log("Data:", err?.response?.data?.error[0]?.message);
         callbackError(err?.response?.data?.error[0]?.message);
+      } else if (err.response?.data?.errors[0]?.msg) {
+        callbackError(err.response?.data?.errors[0]?.msg);
       } else {
-        callbackError(err.message);
+        callbackError(err?.message);
       }
     },
   });

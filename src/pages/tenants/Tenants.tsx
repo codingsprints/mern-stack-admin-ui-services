@@ -15,16 +15,23 @@ import {
   theme,
   Typography,
 } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, Navigate } from "react-router-dom";
-import { FetchTenantsWithPagination } from "../../services/tenants.service";
+import {
+  CreateTenants,
+  DeleteTenant,
+  FetchTenantsWithPagination,
+  UpdateTenant,
+} from "../../services/tenants.service";
 import { TenantTablecolumns } from "../../components/users/TenantTable";
 import TenantFilter from "./TenantsFilter";
 import { CURRENT_PAGE, PER_PAGE } from "../../constant/constant";
-import type { FieldData, tenantQueryParams } from "../../utils/types";
+import type { FieldData, tenantQueryParams, User } from "../../utils/types";
 import { useAuthStore } from "../../store";
 import { debounce } from "lodash";
 import TenantForm from "./form/TenantForm";
+import { DeleteUser } from "../../services/user.service";
+import { toast } from "react-toastify";
 
 const Tenants = () => {
   const {
@@ -48,6 +55,33 @@ const Tenants = () => {
     }, 500);
   }, []);
 
+  const [currentEditingTenant, setCurrentEditingTenant] = useState<User | null>(
+    null
+  );
+  const [currentUserID, setCurrentUserID] = useState<string>("0");
+
+  const callbackCreateTentantFailure = (message: string) => {
+    toast.error(message);
+  };
+
+  const callbackCreateTentantSuccess = () => {
+    form.resetFields();
+    setCurrentEditingTenant(null);
+    toast.success("create Tenants  successfully!!!");
+    setDrawerOpen(false);
+  };
+
+  const callbackUpdateTenantFailure = (message: string) => {
+    toast.error(message);
+  };
+
+  const callbackUpdateTenantSuccess = () => {
+    form.resetFields();
+    setCurrentEditingTenant(null);
+    toast.success("update Tenant successfully!!!");
+    setDrawerOpen(false);
+  };
+
   const {
     data: fetchTenantData,
     isFetching: fetchTenantIsFetching,
@@ -55,6 +89,30 @@ const Tenants = () => {
     error: fetchTenantError,
   } = FetchTenantsWithPagination(tenantQueryParams);
   console.log(fetchTenantData);
+  const { mutate: tenantMutate } = CreateTenants(
+    callbackCreateTentantSuccess,
+    callbackCreateTentantFailure
+  );
+  const { mutate: updateTenantMutation } = UpdateTenant(
+    currentUserID,
+    callbackUpdateTenantSuccess,
+    callbackUpdateTenantFailure
+  );
+  const { mutate: deleteTentantMutation } = DeleteTenant();
+
+  useEffect(() => {
+    if (currentEditingTenant) {
+      form.setFieldsValue({
+        ...currentEditingTenant,
+        tenantId: currentEditingTenant?.tenant?.id,
+      });
+      setDrawerOpen(true);
+    }
+  }, [currentEditingTenant, form]);
+
+  if (user?.role !== "admin") {
+    return <Navigate to="/" replace={true} />;
+  }
 
   const onFilterChange = (changedFields: FieldData[]) => {
     const changedFilterFields = changedFields
@@ -74,9 +132,18 @@ const Tenants = () => {
     }
   };
 
-  if (user?.role !== "admin") {
-    return <Navigate to="/" replace={true} />;
-  }
+  const onHandleSubmit = async () => {
+    await form.validateFields();
+    const isEditMode = !!currentEditingTenant;
+    if (isEditMode) {
+      updateTenantMutation(form.getFieldsValue());
+    } else {
+      tenantMutate(form.getFieldsValue());
+    }
+    form.resetFields();
+    setCurrentEditingTenant(null);
+    setDrawerOpen(false);
+  };
 
   return (
     <>
@@ -100,38 +167,88 @@ const Tenants = () => {
             </Typography.Text>
           )}
         </Flex>
-        {fetchTenantData?.data?.tenantGetAllDto ? (
-          <>
-            <Form form={filterForm} onFieldsChange={onFilterChange}>
-              <TenantFilter>
-                <Button
-                  type="primary"
-                  icon={<PlusOutlined />}
-                  onClick={() => setDrawerOpen(true)}
-                >
-                  Add Restaurant
-                </Button>
-              </TenantFilter>
-            </Form>
-            <Table
-              columns={[...TenantTablecolumns]}
-              dataSource={fetchTenantData?.data?.tenantGetAllDto}
-              rowKey={"id"}
-            />
-          </>
-        ) : (
-          <h1>Not Data Found</h1>
-        )}
+
+        <Form form={filterForm} onFieldsChange={onFilterChange}>
+          <TenantFilter>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setDrawerOpen(true)}
+            >
+              Add Restaurant
+            </Button>
+          </TenantFilter>
+        </Form>
+        <Table
+          columns={[
+            ...TenantTablecolumns,
+            {
+              title: "Actions",
+              render: (_: string, record: User) => {
+                return (
+                  <>
+                    <Space>
+                      <Button
+                        type="primary"
+                        onClick={() => {
+                          console.log(record);
+                          setCurrentUserID(record?.id);
+                          setCurrentEditingTenant(record);
+                        }}
+                      >
+                        Edit
+                      </Button>
+                    </Space>
+                    <Space>
+                      <Button
+                        type="link"
+                        onClick={() => {
+                          console.log(record);
+
+                          const confirm = window.confirm(
+                            "Are You Sure Delete User?"
+                          );
+                          console.log(confirm);
+                          if (confirm) {
+                            deleteTentantMutation(record?.id);
+                          }
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </Space>
+                  </>
+                );
+              },
+            },
+          ]}
+          dataSource={fetchTenantData?.data?.tenantGetAllDto}
+          rowKey={"id"}
+          pagination={{
+            total: fetchTenantData?.data?.total,
+            pageSize: fetchTenantData?.data?.perPage,
+            current: fetchTenantData?.data?.currentPage,
+            onChange: (page) => {
+              console.log(page);
+              setTenantQueryParams((prev) => {
+                return {
+                  ...prev,
+                  currentPage: page,
+                };
+              });
+            },
+          }}
+        />
 
         <Drawer
-          title={"Create restaurant"}
+          title={currentEditingTenant ? "Edit restaurant" : "Create restaurant"}
           width={720}
           styles={{ body: { backgroundColor: colorBgLayout } }}
           //   destroyOnClose={true}
           open={drawerOpen}
           onClose={() => {
             form.resetFields();
-            // setCurrentEditingUser(null);
+            setCurrentEditingTenant(null);
             setDrawerOpen(false);
           }}
           extra={
@@ -139,12 +256,15 @@ const Tenants = () => {
               <Button
                 onClick={() => {
                   form.resetFields();
+                  setCurrentEditingTenant(null);
                   setDrawerOpen(false);
                 }}
               >
                 Cancel
               </Button>
-              <Button type="primary">Submit</Button>
+              <Button type="primary" onClick={onHandleSubmit}>
+                Submit
+              </Button>
             </Space>
           }
         >

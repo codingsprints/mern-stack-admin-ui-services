@@ -8,4 +8,7 @@ export const userApiService = {
       queryParams?.currentPage || 1
     }&q=${queryParams?.q || ""}&role=${queryParams?.role || ""}`,
   createUser: `${AUTH_SERVICE}/users`,
+  singleFetchUser: (id: string) => `${AUTH_SERVICE}/users/${id}`,
+  updateUser: (id: string) => `${AUTH_SERVICE}/users/${id}`,
+  deleteUser: (id: string) => `${AUTH_SERVICE}/users/${id}`,
 };

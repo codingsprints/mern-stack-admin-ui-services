@@ -24,10 +24,18 @@ createRoot(document.getElementById("root")!).render(
       >
         <RouterProvider router={router} />
         <ToastContainer
-          style={{ zIndex: 1000 }}
+          style={{ zIndex: 9999 }}
           position="top-right"
-          toastStyle={{ zIndex: 1000 }}
+          toastStyle={{ zIndex: 9999 }}
           autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
         />
       </ConfigProvider>
     </QueryClientProvider>

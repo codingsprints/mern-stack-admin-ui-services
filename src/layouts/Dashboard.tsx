@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store";
 import {
   Avatar,
@@ -25,6 +25,7 @@ const Dashboard = () => {
   // call getself
   const { user } = useAuthStore();
   const { logout: logoutFromStore } = useAuthStore();
+  const location = useLocation();
 
   const {
     token: { colorBgContainer },

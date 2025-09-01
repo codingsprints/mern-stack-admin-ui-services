@@ -65,3 +65,8 @@ export type tenantQueryParams = {
   currentPage: number;
   q?: string;
 };
+
+export type CreateTenantsType = {
+  name: string;
+  address: string;
+};
