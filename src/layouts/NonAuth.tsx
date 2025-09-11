@@ -8,10 +8,9 @@ const NonAuth = () => {
       new URLSearchParams(location.search).get("returnTo") || "/";
     return <Navigate to={returnTo} replace={true} />;
   }
-
+  console.log("dashboard ", user);
   return (
     <div>
-      <h1>NonAuth Components</h1>
       <Outlet />
     </div>
   );

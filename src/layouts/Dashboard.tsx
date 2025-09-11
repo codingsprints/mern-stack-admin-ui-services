@@ -45,6 +45,8 @@ const Dashboard = () => {
     callbackLogOutError
   );
 
+  console.log("dashboard ", user);
+
   if (user === null) {
     return (
       <Navigate

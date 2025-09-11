@@ -44,6 +44,7 @@ export const selfUserRoot = () => {
     },
     enabled: false,
     retry: (failureCount: number, error) => {
+      console.log(error);
       if (error instanceof AxiosError && error.response?.status === 401) {
         return false;
       }

@@ -10,16 +10,18 @@ import { authEndpoint } from "../constant/api-endpoint/auth.api-endpoint";
 const Root = () => {
   const { setUser } = useAuthStore();
 
-  const { data: selfUserData, isLoading: selfUserIsLoading } = useQuery({
-    queryKey: ["selfUserData"],
-    queryFn: () => axiosInstance.get(authEndpoint.selfRoot),
-    retry: (failureCount: number, error) => {
-      if (error instanceof AxiosError && error.response?.status === 401) {
-        return false;
-      }
-      return failureCount < 3;
-    },
-  });
+  // const { data: selfUserData, isLoading: selfUserIsLoading } = useQuery({
+  //   queryKey: ["selfUserData"],
+  //   queryFn: () => axiosInstance.get(authEndpoint.selfRoot),
+  //   retry: (failureCount: number, error) => {
+  //     if (error instanceof AxiosError && error.response?.status === 401) {
+  //       return false;
+  //     }
+  //     return failureCount < 3;
+  //   },
+  // });
+
+  const { data: selfUserData, isLoading: selfUserIsLoading } = selfUserRoot();
 
   useEffect(() => {
     if (selfUserData) {
