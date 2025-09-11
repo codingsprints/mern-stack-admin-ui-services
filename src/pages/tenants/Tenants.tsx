@@ -23,7 +23,7 @@ import {
   FetchTenantsWithPagination,
   UpdateTenant,
 } from "../../services/tenants.service";
-import { TenantTablecolumns } from "../../components/users/TenantTable";
+import { TenantTablecolumns } from "../../utils/constants/TenantTableColumn";
 import TenantFilter from "./TenantsFilter";
 import { CURRENT_PAGE, PER_PAGE } from "../../constant/constant";
 import type { FieldData, tenantQueryParams, User } from "../../utils/types";

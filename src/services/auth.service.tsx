@@ -42,7 +42,7 @@ export const selfUserRoot = () => {
       const { data } = await axiosInstance.get(authEndpoint.selfRoot);
       return data;
     },
-    enabled: false,
+    // enabled: false,
     retry: (failureCount: number, error) => {
       console.log(error);
       if (error instanceof AxiosError && error.response?.status === 401) {

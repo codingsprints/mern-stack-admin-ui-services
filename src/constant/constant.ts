@@ -1,4 +1,5 @@
-export const AUTH_SERVICE = `/pizza/api/v1`;
+export const AUTH_SERVICE = `/pizza/auth/api/v1`;
+export const CATALOG_SERVICE = `/pizza/catalog/api/v1`;
 
 export const ROLES = {
   ADMIN: "admin",

@@ -57,7 +57,7 @@ const Dashboard = () => {
     );
   }
 
-  console.log(user);
+  console.log("user.role", user);
 
   const items = getMenuItems(user.role);
 

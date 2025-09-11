@@ -1,4 +1,4 @@
-import type { User } from "../../utils/types";
+import type { User } from "../types";
 
 export const userTableColumns = [
   {

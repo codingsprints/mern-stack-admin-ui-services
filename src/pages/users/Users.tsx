@@ -23,7 +23,7 @@ import {
   FetchUsers,
   UpdateUser,
 } from "../../services/user.service";
-import { userTableColumns } from "../../components/users/UsersTable";
+import { userTableColumns } from "../../utils/constants/UsersTableColumn";
 import type { FieldData, User, userQueryParams } from "../../utils/types";
 import { useAuthStore } from "../../store";
 import UsersFilter from "./UsersFilter";
