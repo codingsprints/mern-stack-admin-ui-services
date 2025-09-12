@@ -6,7 +6,7 @@ export const tenantEndPoint = {
       queryParams?.currentPage || 1
     }&q=${queryParams?.q || ""}`,
 
-  fetchTenants: `${AUTH_SERVICE}/tenants`,
+  fetchTenants: `${AUTH_SERVICE}/tenants?perPage=1000&currentPage=1`,
   createTenants: `${AUTH_SERVICE}/tenants`,
   updateTenant: (id: string) => `${AUTH_SERVICE}/tenants/${id}`,
   deleteTenant: (id: string) => `${AUTH_SERVICE}/tenants/${id}`,
