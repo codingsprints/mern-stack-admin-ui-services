@@ -66,6 +66,14 @@ export type tenantQueryParams = {
   q?: string;
 };
 
+export type productQueryParams = {
+  perPage: number;
+  currentPage: number;
+  q?: string;
+  tenantId?: number;
+  categoryId?: string;
+};
+
 export type CreateTenantsType = {
   name: string;
   address: string;
@@ -73,6 +81,8 @@ export type CreateTenantsType = {
 
 export type ProductsFilterProps = {
   children?: React.ReactNode;
+  isPublish: boolean;
+  setIsPublish: (isPublish: boolean) => void;
 };
 
 export interface PriceConfiguration {

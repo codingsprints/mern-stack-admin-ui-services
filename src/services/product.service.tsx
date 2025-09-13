@@ -5,17 +5,22 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { axiosInstance } from "../utils/axios";
-import type { CreateTenantsType } from "../utils/types";
+import type { CreateTenantsType, productQueryParams } from "../utils/types";
 import { toast } from "react-toastify";
 import type { AxiosError } from "axios";
 import { productQueryKey } from "../constant/query-keys/products.query-keys";
 import { productEndPoint } from "../constant/api-endpoint/products.api-endpoint";
 
-export const FetchProductsWithPagination = () => {
+export const FetchProductsWithPagination = (
+  queryParams: productQueryParams,
+  productIsPubliced: boolean
+) => {
   return useQuery({
-    queryKey: [productQueryKey.fetchproducts],
+    queryKey: [productQueryKey.fetchproducts, queryParams, productIsPubliced],
     queryFn: async () => {
-      const { data } = await axiosInstance.get(productEndPoint.fetchProducts);
+      const { data } = await axiosInstance.get(
+        productEndPoint.fetchProducts(queryParams, productIsPubliced)
+      );
       return data;
     },
     placeholderData: keepPreviousData,

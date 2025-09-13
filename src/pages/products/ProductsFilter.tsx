@@ -15,14 +15,15 @@ import type { ProductsFilterProps, Tenant } from "../../utils/types";
 import { FetchCategories } from "../../services/category.service";
 import { FetchTenants } from "../../services/tenants.service";
 
-const ProductsFilter = ({ children }: ProductsFilterProps) => {
+const ProductsFilter = ({
+  children,
+  setIsPublish,
+  isPublish,
+}: ProductsFilterProps) => {
   const { user } = useAuthStore();
 
   const { data: categoriesData } = FetchCategories();
   const { data: tenantData } = FetchTenants();
-
-  console.log("tenantData", tenantData);
-  console.log("categoriesData", categoriesData);
 
   return (
     <Card>
@@ -80,7 +81,12 @@ const ProductsFilter = ({ children }: ProductsFilterProps) => {
             <Col span={6}>
               <Space>
                 <Form.Item name="isPublish">
-                  <Switch defaultChecked={false} onChange={() => {}} />
+                  <Switch
+                    defaultChecked={false}
+                    onChange={() => {
+                      setIsPublish(!isPublish);
+                    }}
+                  />
                 </Form.Item>
                 <Typography.Text style={{ marginBottom: 22, display: "block" }}>
                   Show only published

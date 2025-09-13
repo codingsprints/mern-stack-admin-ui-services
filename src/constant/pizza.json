@@ -1,0 +1,76 @@
+[
+  {
+    "name": "Deluxe Veggie",
+    "description": "For a vegetarian looking for a BIG treat that goes easy on the spices, this one's got it all.. The onions, the capsicum, those delectable mushrooms - with paneer and golden corn to top it all.",
+    "priceConfiguration": {
+      "Size": {
+        "base": {
+          "availableOptions": {
+            "regular": 265,
+            "medium": 469,
+            "large": 705
+          }
+        }
+      },
+      "Crust": {
+        "aditional": {
+          "availableOptions": {
+            "Cheese Burst": 60,
+            "Classic Hand Tossed": 0,
+            "Wheat Thin Crust": 40,
+            "Fresh Pan Pizza": 50,
+            "New Hand Tossed": 0
+          }
+        }
+      }
+    },
+    "attributes": [
+      {
+        "name": "Toppings",
+        "value": ["Black Olives", "Crisp Capsicum", "Paneer"]
+      },
+      { "name": "Extra Cheese", "value": "Mozzarella" }
+    ],
+    "tenantId": 1,
+    "categoryId": "slsand",
+    "isPublish": true,
+    "image": "test.jpg"
+  },
+  {
+    "name": "",
+    "description": "For a vegetarian looking for a BIG treat that goes easy on the spices, this one's got it all.. The onions, the capsicum, those delectable mushrooms - with paneer and golden corn to top it all.",
+    "priceConfiguration": {
+      "Size": {
+        "base": {
+          "availableOptions": {
+            "regular": 265,
+            "medium": 469,
+            "large": 705
+          }
+        }
+      },
+      "Crust": {
+        "aditional": {
+          "availableOptions": {
+            "Cheese Burst": 60,
+            "Classic Hand Tossed": 0,
+            "Wheat Thin Crust": 40,
+            "Fresh Pan Pizza": 50,
+            "New Hand Tossed": 0
+          }
+        }
+      }
+    },
+    "attributes": [
+      {
+        "name": "Toppings",
+        "value": ["Black Olives", "Crisp Capsicum", "Paneer"]
+      },
+      { "name": "Extra Cheese", "value": "Mozzarella" }
+    ],
+    "tenantId": 1,
+    "categoryId": "slsand",
+    "isPublish": true,
+    "image": "test.jpg"
+  }
+]

@@ -23,8 +23,6 @@ const Root = () => {
 
   const { data: selfUserData, isLoading: selfUserIsLoading } = selfUserRoot();
 
-  console.log("selfUserData", selfUserData);
-
   useEffect(() => {
     if (selfUserData) {
       setUser(selfUserData?.data?.selfDto);
