@@ -14,6 +14,7 @@ import { useAuthStore } from "../../store";
 import type { ProductsFilterProps, Tenant } from "../../utils/types";
 import { FetchCategories } from "../../services/category.service";
 import { FetchTenants } from "../../services/tenants.service";
+import { ROLES } from "../../constant/constant";
 
 const ProductsFilter = ({
   children,
@@ -53,7 +54,7 @@ const ProductsFilter = ({
                 </Select>
               </Form.Item>
             </Col>
-            {user!.role === "admin" && (
+            {user!.role === ROLES.ADMIN && (
               <Col span={6}>
                 <Form.Item name="tenantId">
                   <Select
