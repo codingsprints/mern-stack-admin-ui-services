@@ -47,18 +47,23 @@ export const CreateProducts = (
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [productQueryKey.createproducts],
-    mutationFn: async (details: CreateTenantsType) => {
+    mutationFn: async (details: any) => {
       const { data } = await axiosInstance.post(
         productEndPoint.createProducts,
-        details
+        details,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       return data;
     },
     onSuccess() {
       callbackCreateTenantSuccess();
-      //   queryClient.invalidateQueries({
-      //     queryKey: [productQueryKey.fetchproducts],
-      //   });
+      queryClient.invalidateQueries({
+        queryKey: [productQueryKey.fetchproducts],
+      });
     },
     onError(error) {
       const err = error as AxiosError<any>; // cast error to AxiosError

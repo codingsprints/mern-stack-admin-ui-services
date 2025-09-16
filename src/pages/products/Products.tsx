@@ -6,11 +6,13 @@ import {
 import {
   Breadcrumb,
   Button,
+  Drawer,
   Flex,
   Form,
   Space,
   Spin,
   Table,
+  theme,
   Typography,
 } from "antd";
 import { Link } from "react-router-dom";
@@ -26,14 +28,18 @@ import { useMemo, useState } from "react";
 import { CURRENT_PAGE, PER_PAGE } from "../../constant/constant";
 import { useAuthStore } from "../../store";
 import { debounce } from "lodash";
-import { FetchCategories } from "../../services/category.service";
+import ProductForm from "./forms/ProductForm";
+import { makeFormData } from "./helpers";
 
 const Products = () => {
   const { user } = useAuthStore();
   const [filterForm] = Form.useForm();
   const [form] = Form.useForm();
+  const {
+    token: { colorBgLayout },
+  } = theme.useToken();
 
-  const [selectedProduct, setCurrentProduct] = useState<Product | null>(null);
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
   const [queryParams, setQueryParams] = useState<productQueryParams>({
     perPage: 10,
     currentPage: CURRENT_PAGE,
@@ -42,13 +48,19 @@ const Products = () => {
     categoryId: "",
   });
   const [productIsPubliced, setProductIsPubliced] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const debouncedQUpdate = useMemo(() => {
     return debounce((value: string | undefined) => {
       setQueryParams((prev) => ({ ...prev, q: value, currentPage: 1 }));
     }, 500);
   }, []);
 
-  const createProductSuccess = () => {};
+  const createProductSuccess = () => {
+    toast.success("Product created successfully");
+    form.resetFields();
+    setCurrentProduct(null);
+    setDrawerOpen(false);
+  };
 
   const createProductFailure = (message: string) => {
     toast.error(message);
@@ -89,6 +101,93 @@ const Products = () => {
     }
   };
 
+  const onHandleSubmit = async () => {
+    /*
+
+    const currentData = {
+        '{"configurationKey":"Size","priceType":"base"}': {
+            Small: 100,
+            Medium: 200,
+            Large: 400,
+        },
+        '{"configurationKey":"Crust","priceType":"aditional"}': {
+            Thin: 0,
+            Thick: 50,
+        },
+    };
+
+    convert to blow given format.
+
+    const dummy = {
+        Size: { priceType: 'base', availableOptions: { Small: 400, Medium: 600, Large: 800 } },
+        Crust: { priceType: 'aditional', availableOptions: { Thin: 50, Thick: 100 } },
+    };
+
+    
+    */
+
+    await form.validateFields();
+    console.log("form.getFieldsValue()", form.getFieldsValue());
+
+    const priceConfiguration = form.getFieldValue("priceConfiguration");
+    const pricing = Object.entries(priceConfiguration).reduce(
+      (acc, [key, value]) => {
+        const parsedKey = JSON.parse(key);
+        return {
+          ...acc,
+          [parsedKey.configurationKey]: {
+            priceType: parsedKey.priceType,
+            availableOptions: value,
+          },
+        };
+      },
+      {}
+    );
+
+    const categoryId = form.getFieldValue("categoryId");
+    /*
+    const attrs = [
+        { name: 'Is Hit', value: true },
+        { name: 'Spiciness', value: 'Hot' },
+    ];
+
+    convert to below given format.
+
+    const currentAttrs = {
+        isHit: 'No',
+        Spiciness: 'Less',
+    };
+    */
+
+    const attributes = Object.entries(form.getFieldValue("attributes")).map(
+      ([key, value]) => {
+        return {
+          name: key,
+          value: value,
+        };
+      }
+    );
+
+    const postData = {
+      ...form.getFieldsValue(),
+      tenantId:
+        user!.role === "manager"
+          ? user?.tenant?.id
+          : form.getFieldValue("tenantId"),
+      isPublish: form.getFieldValue("isPublish") ? true : false,
+      image: form.getFieldValue("image"),
+      categoryId,
+      priceConfiguration: pricing,
+      attributes,
+    };
+
+    console.log("postData", postData);
+
+    const formData = makeFormData(postData);
+    console.log(formData);
+    createProductsMutate(formData);
+  };
+
   return (
     <>
       <Space direction="vertical" size="large" style={{ width: "100%" }}>
@@ -122,7 +221,7 @@ const Products = () => {
               type="primary"
               icon={<PlusOutlined />}
               onClick={() => {
-                // setDrawerOpen(true);
+                setDrawerOpen(true);
               }}
             >
               Add Product
@@ -172,6 +271,38 @@ const Products = () => {
             },
           }}
         />
+        <Drawer
+          title={"Add Product"}
+          width={720}
+          styles={{ body: { backgroundColor: colorBgLayout } }}
+          //   destroyOnClose={true}
+          open={drawerOpen}
+          onClose={() => {
+            form.resetFields();
+            setCurrentProduct(null);
+            setDrawerOpen(false);
+          }}
+          extra={
+            <Space>
+              <Button
+                onClick={() => {
+                  form.resetFields();
+                  setCurrentProduct(null);
+                  setDrawerOpen(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button type="primary" onClick={onHandleSubmit}>
+                Submit
+              </Button>
+            </Space>
+          }
+        >
+          <Form layout="vertical" form={form}>
+            <ProductForm form={form} />
+          </Form>
+        </Drawer>
       </Space>
     </>
   );
