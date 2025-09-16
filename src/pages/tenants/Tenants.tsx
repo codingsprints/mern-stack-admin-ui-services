@@ -140,9 +140,9 @@ const Tenants = () => {
     } else {
       tenantMutate(form.getFieldsValue());
     }
-    form.resetFields();
-    setCurrentEditingTenant(null);
-    setDrawerOpen(false);
+    // form.resetFields();
+    // setCurrentEditingTenant(null);
+    // setDrawerOpen(false);
   };
 
   return (

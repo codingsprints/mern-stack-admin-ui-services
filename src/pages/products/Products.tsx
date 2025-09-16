@@ -19,12 +19,13 @@ import { Link } from "react-router-dom";
 import {
   CreateProducts,
   FetchProductsWithPagination,
+  UpdateProduct,
 } from "../../services/product.service";
 import { toast } from "react-toastify";
 import ProductsFilter from "./ProductsFilter";
 import { ProductTablecolumns } from "../../utils/constants/ProductTableColumn";
 import type { FieldData, Product, productQueryParams } from "../../utils/types";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { CURRENT_PAGE, PER_PAGE } from "../../constant/constant";
 import { useAuthStore } from "../../store";
 import { debounce } from "lodash";
@@ -39,7 +40,8 @@ const Products = () => {
     token: { colorBgLayout },
   } = theme.useToken();
 
-  const [currentProduct, setCurrentProduct] = useState<Product | null>(null);
+  const [selectedProduct, setCurrentProduct] = useState<Product | null>(null);
+
   const [queryParams, setQueryParams] = useState<productQueryParams>({
     perPage: 10,
     currentPage: CURRENT_PAGE,
@@ -54,11 +56,51 @@ const Products = () => {
       setQueryParams((prev) => ({ ...prev, q: value, currentPage: 1 }));
     }, 500);
   }, []);
+  const [currentUserID, setCurrentUserID] = useState<string>("");
+
+  useEffect(() => {
+    if (selectedProduct) {
+      setDrawerOpen(true);
+
+      console.log("seletedProduct", selectedProduct.priceConfiguration);
+
+      const priceConfiguration = Object.entries(
+        selectedProduct.priceConfiguration
+      ).reduce((acc, [key, value]) => {
+        const stringifiedKey = JSON.stringify({
+          configurationKey: key,
+          priceType: value.priceType,
+        });
+
+        return {
+          ...acc,
+          [stringifiedKey]: value.availableOptions,
+        };
+      }, {});
+
+      const attributes = selectedProduct.attributes.reduce((acc, item) => {
+        return {
+          ...acc,
+          [item.name]: item.value,
+        };
+      }, {});
+
+      form.setFieldsValue({
+        ...selectedProduct,
+        priceConfiguration,
+        attributes,
+        // todo: fix this
+        categoryId: selectedProduct.category._id,
+      });
+    }
+  }, [selectedProduct, form]);
 
   const createProductSuccess = () => {
-    toast.success("Product created successfully");
+    form.setFieldValue("image", null);
     form.resetFields();
     setCurrentProduct(null);
+    toast.success("Product created successfully");
+    setCurrentUserID("");
     setDrawerOpen(false);
   };
 
@@ -66,9 +108,26 @@ const Products = () => {
     toast.error(message);
   };
 
-  const { mutate: createProductsMutate } = CreateProducts(
-    createProductSuccess,
-    createProductFailure
+  const { mutate: createProductsMutate, isPending: isCreateLoading } =
+    CreateProducts(createProductSuccess, createProductFailure);
+
+  const callbackUpdateSuccess = () => {
+    form.setFieldValue("image", null);
+    form.resetFields();
+    setCurrentProduct(null);
+    toast.success("Product update successfully");
+    setCurrentUserID("");
+    setDrawerOpen(false);
+  };
+
+  const callbackUpdateFailure = (message: string) => {
+    toast.error(message);
+  };
+
+  const { mutate: updateProduct } = UpdateProduct(
+    currentUserID,
+    callbackUpdateSuccess,
+    callbackUpdateFailure
   );
 
   const {
@@ -127,6 +186,7 @@ const Products = () => {
     */
 
     await form.validateFields();
+    const isEdit = !!selectedProduct;
     console.log("form.getFieldsValue()", form.getFieldsValue());
 
     const priceConfiguration = form.getFieldValue("priceConfiguration");
@@ -185,7 +245,12 @@ const Products = () => {
 
     const formData = makeFormData(postData);
     console.log(formData);
-    createProductsMutate(formData);
+
+    if (isEdit) {
+      updateProduct(formData);
+    } else {
+      createProductsMutate(formData);
+    }
   };
 
   return (
@@ -241,6 +306,7 @@ const Products = () => {
                       type="link"
                       onClick={() => {
                         setCurrentProduct(record);
+                        setCurrentUserID(record?._id);
                       }}
                     >
                       Edit
@@ -272,7 +338,7 @@ const Products = () => {
           }}
         />
         <Drawer
-          title={"Add Product"}
+          title={selectedProduct ? "Update Product" : "Add New Product"}
           width={720}
           styles={{ body: { backgroundColor: colorBgLayout } }}
           //   destroyOnClose={true}
@@ -293,7 +359,11 @@ const Products = () => {
               >
                 Cancel
               </Button>
-              <Button type="primary" onClick={onHandleSubmit}>
+              <Button
+                type="primary"
+                onClick={onHandleSubmit}
+                loading={isCreateLoading}
+              >
                 Submit
               </Button>
             </Space>

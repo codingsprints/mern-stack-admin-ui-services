@@ -3,7 +3,7 @@ import { loginSchema } from "../schema/login.schema";
 
 // Field-level validator for AntD <Form.Item>
 export const zodValidator =
-  (field: keyof typeof loginSchema.shape) => async (_: any, value: any) => {
+  (field: keyof typeof loginSchema.shape) => async (_: any, value: string) => {
     try {
       loginSchema.pick({ [field]: true }).parse({ [field]: value });
       return Promise.resolve();

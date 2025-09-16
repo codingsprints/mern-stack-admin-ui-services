@@ -11,7 +11,7 @@ import {
 } from "antd";
 
 import { useAuthStore } from "../../store";
-import type { ProductsFilterProps, Tenant } from "../../utils/types";
+import type { Category, ProductsFilterProps, Tenant } from "../../utils/types";
 import { FetchCategories } from "../../services/category.service";
 import { FetchTenants } from "../../services/tenants.service";
 import { ROLES } from "../../constant/constant";
@@ -44,13 +44,15 @@ const ProductsFilter = ({
                   allowClear={true}
                   placeholder="Select category"
                 >
-                  {categoriesData?.data?.categoryDto?.map((category: any) => {
-                    return (
-                      <Select.Option key={category._id} value={category._id}>
-                        {category.name}
-                      </Select.Option>
-                    );
-                  })}
+                  {categoriesData?.data?.categoryDto?.map(
+                    (category: Category) => {
+                      return (
+                        <Select.Option key={category._id} value={category._id}>
+                          {category.name}
+                        </Select.Option>
+                      );
+                    }
+                  )}
                 </Select>
               </Form.Item>
             </Col>

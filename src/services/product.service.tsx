@@ -87,17 +87,22 @@ export const UpdateProduct = (
   const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [productQueryKey.updateproducts],
-    mutationFn: async (details: CreateTenantsType) => {
-      const { data } = await axiosInstance.patch(
+    mutationFn: async (details: any) => {
+      const { data } = await axiosInstance.put(
         productEndPoint.updateProducts(id),
-        details
+        details,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       return data;
     },
     onSuccess() {
-      //   queryClient.invalidateQueries({
-      //     queryKey: [productQueryKey.fetchproducts],
-      //   });
+      queryClient.invalidateQueries({
+        queryKey: [productQueryKey.fetchproducts],
+      });
       callbackUpdateTenantSuccess();
     },
     onError(error) {
