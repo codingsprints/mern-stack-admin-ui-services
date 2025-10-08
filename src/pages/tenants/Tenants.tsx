@@ -30,7 +30,6 @@ import type { FieldData, tenantQueryParams, User } from "../../utils/types";
 import { useAuthStore } from "../../store";
 import { debounce } from "lodash";
 import TenantForm from "./form/TenantForm";
-import { DeleteUser } from "../../services/user.service";
 import { toast } from "react-toastify";
 
 const Tenants = () => {
@@ -88,7 +87,7 @@ const Tenants = () => {
     isError: fetchTenantIsError,
     error: fetchTenantError,
   } = FetchTenantsWithPagination(tenantQueryParams);
-  console.log(fetchTenantData);
+
   const { mutate: tenantMutate } = CreateTenants(
     callbackCreateTentantSuccess,
     callbackCreateTentantFailure
@@ -191,7 +190,6 @@ const Tenants = () => {
                       <Button
                         type="primary"
                         onClick={() => {
-                          console.log(record);
                           setCurrentUserID(record?.id);
                           setCurrentEditingTenant(record);
                         }}
@@ -203,12 +201,10 @@ const Tenants = () => {
                       <Button
                         type="link"
                         onClick={() => {
-                          console.log(record);
-
                           const confirm = window.confirm(
                             "Are You Sure Delete User?"
                           );
-                          console.log(confirm);
+
                           if (confirm) {
                             deleteTentantMutation(record?.id);
                           }
@@ -229,7 +225,6 @@ const Tenants = () => {
             pageSize: fetchTenantData?.data?.perPage,
             current: fetchTenantData?.data?.currentPage,
             onChange: (page) => {
-              console.log(page);
               setTenantQueryParams((prev) => {
                 return {
                   ...prev,
@@ -238,7 +233,6 @@ const Tenants = () => {
               });
             },
             showTotal: (total: number, range: number[]) => {
-              console.log(total, range);
               return `Showing ${range[0]}-${range[1]} of ${total} items`;
             },
           }}

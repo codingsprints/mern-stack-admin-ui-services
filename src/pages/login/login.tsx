@@ -33,7 +33,7 @@ const LoginPage = () => {
 
     // admin, manager and customer
     // customer can not access
-    console.log(selfDataPromise?.data?.data?.selfDto?.role);
+
     if (!isAllowed(selfDataPromise?.data?.data?.selfDto)) {
       logoutUserMuate();
       return;

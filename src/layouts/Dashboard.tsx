@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import { useAuthStore } from "../store";
 import {
@@ -16,7 +16,6 @@ import Sider from "antd/es/layout/Sider";
 import Logo from "../components/icons/Logo";
 import { Content, Footer, Header } from "antd/es/layout/layout";
 import { BellFilled } from "@ant-design/icons";
-import { logoutUser } from "../services/auth.service";
 import { toast } from "react-toastify";
 import { useLogoutUser } from "../hooks/useLogoutUser";
 
@@ -45,8 +44,6 @@ const Dashboard = () => {
     callbackLogOutError
   );
 
-  console.log("dashboard ", user);
-
   if (user === null) {
     return (
       <Navigate
@@ -56,8 +53,6 @@ const Dashboard = () => {
       />
     );
   }
-
-  console.log("user.role", user);
 
   const items = getMenuItems(user.role);
 

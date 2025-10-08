@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import {
   keepPreviousData,
   useMutation,
@@ -41,7 +42,7 @@ export const CreateProducts = (
   callbackCreateTenantSuccess: () => void,
   callbackCreateTenantFailure: (message: string) => void
 ) => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [categoryQueryKey.createcategories],
     mutationFn: async (details: CreateTenantsType) => {
@@ -76,7 +77,7 @@ export const UpdateCategories = (
   callbackUpdateTenantSuccess: () => void,
   callbackUpdateTenantFailure: (message: string) => void
 ) => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [categoryQueryKey.updatecategories],
     mutationFn: async (details: CreateTenantsType) => {
@@ -118,15 +119,14 @@ export const DeleteCategories = () => {
     },
     onSuccess() {
       toast.success("Category delete successfully!!!");
-      // queryClient.invalidateQueries({
-      //   queryKey: [categoryQueryKey.fetchcategories],
-      // });
+      queryClient.invalidateQueries({
+        queryKey: [categoryQueryKey.fetchcategories],
+      });
     },
     onError(error) {
       const err = error as AxiosError<any>; // cast error to AxiosError
 
       if (err?.response?.data?.error) {
-        console.log("Data:", err);
         toast.error(err?.response?.data?.error[0]?.message);
       } else {
         toast.error(err.message);

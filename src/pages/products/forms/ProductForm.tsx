@@ -22,15 +22,10 @@ import Attributes from "./Attributes";
 const ProductForm = ({ form }: { form: FormInstance }) => {
   const { user } = useAuthStore();
   const selectedCategory = Form.useWatch("categoryId");
-  //   console.log(selectedCategory);
 
   const { data: restaurants } = FetchTenants();
 
-  //   console.log(restaurants);
-
   const { data: categories } = FetchCategories();
-
-  //   console.log(categories);
 
   return (
     <Row>

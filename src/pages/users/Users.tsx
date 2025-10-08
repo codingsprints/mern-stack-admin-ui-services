@@ -115,10 +115,8 @@ const Users = () => {
     await form.validateFields();
     const isEditMode = !!currentEditingUser;
     if (isEditMode) {
-      console.log("update form data", form.getFieldsValue());
       updateUserMutation(form.getFieldsValue());
     } else {
-      console.log("form data", form.getFieldsValue());
       userMutate(form.getFieldsValue());
     }
   };
@@ -129,7 +127,7 @@ const Users = () => {
         [item.name[0]]: item.value,
       }))
       .reduce((acc, item) => ({ ...acc, ...item }), {});
-    console.log(changedFilterFields);
+
     if ("q" in changedFilterFields) {
       debouncedQUpdate(changedFilterFields.q);
     } else {
@@ -187,7 +185,6 @@ const Users = () => {
                       <Button
                         type="primary"
                         onClick={() => {
-                          console.log(record);
                           setCurrentUserID(record?.id);
                           setCurrentEditingUser(record);
                         }}
@@ -199,12 +196,10 @@ const Users = () => {
                       <Button
                         type="link"
                         onClick={() => {
-                          console.log(record);
-
                           const confirm = window.confirm(
                             "Are You Sure Delete User?"
                           );
-                          console.log(confirm);
+
                           if (confirm) {
                             deleteUserMutation(record?.id);
                           }
@@ -225,7 +220,6 @@ const Users = () => {
             pageSize: userQueryParams.perPage,
             current: userQueryParams.currentPage,
             onChange: (page) => {
-              console.log(page);
               setUserQueryParams((prev) => {
                 return {
                   ...prev,
@@ -234,7 +228,6 @@ const Users = () => {
               });
             },
             showTotal: (total: number, range: number[]) => {
-              console.log(total, range);
               return `Showing ${range[0]}-${range[1]} of ${total} items`;
             },
           }}

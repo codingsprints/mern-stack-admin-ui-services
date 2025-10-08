@@ -1,4 +1,3 @@
-import type { createUser } from "../../services/user.service";
 import type { userQueryParams } from "../../utils/types";
 import { AUTH_SERVICE } from "../constant";
 

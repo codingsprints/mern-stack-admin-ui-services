@@ -5,7 +5,6 @@ export const makeFormData = (data: CreateProductData) => {
 
   Object.entries(data).forEach(([key, value]) => {
     if (key === "image") {
-      console.log("value", value);
       formData.append(key, (value as ImageField).file);
     } else if (key === "priceConfiguration" || key === "attributes") {
       formData.append(key, JSON.stringify(value));

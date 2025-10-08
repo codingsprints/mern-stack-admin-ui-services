@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import {
   keepPreviousData,
   useMutation,
@@ -5,7 +6,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { axiosInstance } from "../utils/axios";
-import type { CreateTenantsType, productQueryParams } from "../utils/types";
+import type { productQueryParams } from "../utils/types";
 import { toast } from "react-toastify";
 import type { AxiosError } from "axios";
 import { productQueryKey } from "../constant/query-keys/products.query-keys";
@@ -120,7 +121,7 @@ export const UpdateProduct = (
 };
 
 export const DeleteProduct = () => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [productQueryKey.deleteproducts],
     mutationFn: async (id: string) => {
@@ -139,7 +140,6 @@ export const DeleteProduct = () => {
       const err = error as AxiosError<any>; // cast error to AxiosError
 
       if (err?.response?.data?.error) {
-        console.log("Data:", err);
         toast.error(err?.response?.data?.error[0]?.message);
       } else {
         toast.error(err.message);

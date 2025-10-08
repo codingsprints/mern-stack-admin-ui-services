@@ -17,8 +17,6 @@ const Attributes = ({ selectedCategory }: PricingProps) => {
 
   const { data: fetchedCategory } = FetchSingleCategory(selectedCategory);
 
-  console.log(fetchedCategory);
-
   if (!fetchedCategory?.data?.categoryDto?.attributes) return null;
 
   return (

@@ -1,8 +1,4 @@
-import Icon, {
-  BellFilled,
-  ProductFilled,
-  UserAddOutlined,
-} from "@ant-design/icons";
+import Icon, { ProductFilled } from "@ant-design/icons";
 import { NavLink } from "react-router-dom";
 import Home from "../components/icons/Home";
 import { foodIcon } from "../components/icons/FoodIcon";

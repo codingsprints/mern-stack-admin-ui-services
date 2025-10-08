@@ -26,7 +26,7 @@ import ProductsFilter from "./ProductsFilter";
 import { ProductTablecolumns } from "../../utils/constants/ProductTableColumn";
 import type { FieldData, Product, productQueryParams } from "../../utils/types";
 import { useEffect, useMemo, useState } from "react";
-import { CURRENT_PAGE, PER_PAGE } from "../../constant/constant";
+import { CURRENT_PAGE } from "../../constant/constant";
 import { useAuthStore } from "../../store";
 import { debounce } from "lodash";
 import ProductForm from "./forms/ProductForm";
@@ -61,8 +61,6 @@ const Products = () => {
   useEffect(() => {
     if (selectedProduct) {
       setDrawerOpen(true);
-
-      console.log("seletedProduct", selectedProduct.priceConfiguration);
 
       const priceConfiguration = Object.entries(
         selectedProduct.priceConfiguration
@@ -132,18 +130,12 @@ const Products = () => {
 
   const {
     data: productsData,
-    isFetched: productIsFetch,
     isLoading: productIsLoading,
     isError: productIsError,
     error: productError,
   } = FetchProductsWithPagination(queryParams, productIsPubliced);
 
-  console.log(productsData);
-  console.log("queryParams", queryParams);
-  console.log(productError);
-
   const onFilterChange = (changedFields: FieldData[]) => {
-    console.log("changedFields", changedFields);
     const changedFilterFields = changedFields
       .map((item) => ({
         [item.name[0]]: item.value,
@@ -187,7 +179,6 @@ const Products = () => {
 
     await form.validateFields();
     const isEdit = !!selectedProduct;
-    console.log("form.getFieldsValue()", form.getFieldsValue());
 
     const priceConfiguration = form.getFieldValue("priceConfiguration");
     const pricing = Object.entries(priceConfiguration).reduce(
@@ -241,10 +232,7 @@ const Products = () => {
       attributes,
     };
 
-    console.log("postData", postData);
-
     const formData = makeFormData(postData);
-    console.log(formData);
 
     if (isEdit) {
       updateProduct(formData);
@@ -323,7 +311,6 @@ const Products = () => {
             pageSize: queryParams.perPage,
             current: queryParams.currentPage,
             onChange: (page) => {
-              console.log(page);
               setQueryParams((prev) => {
                 return {
                   ...prev,
@@ -332,7 +319,6 @@ const Products = () => {
               });
             },
             showTotal: (total: number, range: number[]) => {
-              console.log(total, range);
               return `Showing ${range[0]}-${range[1]} of ${total} items`;
             },
           }}

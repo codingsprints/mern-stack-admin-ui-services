@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import {
   keepPreviousData,
   useMutation,
@@ -124,7 +125,6 @@ export const DeleteTenant = () => {
       const err = error as AxiosError<any>; // cast error to AxiosError
 
       if (err?.response?.data?.error) {
-        console.log("Data:", err);
         toast.error(err?.response?.data?.error[0]?.message);
       } else {
         toast.error(err.message);

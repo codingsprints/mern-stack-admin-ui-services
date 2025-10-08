@@ -1,9 +1,5 @@
-import {
-  keepPreviousData,
-  useMutation,
-  useQuery,
-  useQueryClient,
-} from "@tanstack/react-query";
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+import { keepPreviousData, useMutation, useQuery } from "@tanstack/react-query";
 import { axiosInstance } from "../utils/axios";
 import type { CreateTenantsType } from "../utils/types";
 import { toast } from "react-toastify";
@@ -39,7 +35,6 @@ export const CreateToppings = (
   callbackCreateTenantSuccess: () => void,
   callbackCreateTenantFailure: (message: string) => void
 ) => {
-  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [toppingQueryKey.createtoppings],
     mutationFn: async (details: CreateTenantsType) => {
@@ -74,7 +69,7 @@ export const UpdateToppings = (
   callbackUpdateTenantSuccess: () => void,
   callbackUpdateTenantFailure: (message: string) => void
 ) => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [toppingQueryKey.updatetoppings],
     mutationFn: async (details: CreateTenantsType) => {
@@ -105,7 +100,7 @@ export const UpdateToppings = (
 };
 
 export const DeleteToppings = () => {
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   return useMutation({
     mutationKey: [toppingQueryKey.deletetoppings],
     mutationFn: async (id: string) => {
@@ -124,7 +119,6 @@ export const DeleteToppings = () => {
       const err = error as AxiosError<any>; // cast error to AxiosError
 
       if (err?.response?.data?.error) {
-        console.log("Data:", err);
         toast.error(err?.response?.data?.error[0]?.message);
       } else {
         toast.error(err.message);

@@ -1,10 +1,10 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { authQueryKeys } from "../constant/query-keys/auth.query-keys";
 import { axiosInstance } from "../utils/axios";
 import { authEndpoint } from "../constant/api-endpoint/auth.api-endpoint";
 import type { Credentials } from "../utils/types";
 import { AxiosError } from "axios";
-import { toast } from "react-toastify";
 
 export const loginUser = (
   callbackSuccess: () => void,
@@ -23,8 +23,6 @@ export const loginUser = (
       const err = error as AxiosError<any>; // cast error to AxiosError
 
       if (err.response?.data?.error[0]?.message) {
-        console.log("Data:", err);
-        console.log("Data:", err?.response?.data?.error[0]?.message);
         callbackError(err?.response?.data?.error[0]?.message);
       } else if (err.response?.data?.errors[0]?.msg) {
         callbackError(err.response?.data?.errors[0]?.msg);
@@ -44,7 +42,6 @@ export const selfUserRoot = () => {
     },
     // enabled: false,
     retry: (failureCount: number, error) => {
-      console.log(error);
       if (error instanceof AxiosError && error.response?.status === 401) {
         return false;
       }
